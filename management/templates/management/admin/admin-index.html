@@ -1,0 +1,110 @@
+{% extends 'management/admin/admin-base.html' %}{% load crispy_forms_tags %} {%load static %}{% block header %}Home{% endblock %}
+{% block content %}
+<div class="content">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Active Residences</h3>
+					</div>
+					<!-- /.card-header -->
+					<div class="card-body" style="overflow: auto;">
+						<table id="datatable" class="table table-bordered table-hover">
+							<thead>
+								<tr>
+									<th></th>
+									<th>Tenant Name</th>
+									<th>Tenant Contacts</th>
+									<th>Date Registered</th>
+									<th>Status</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<th>+</th>
+									<td></td>
+
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+							</tbody>
+						</table>
+						
+					</div>
+					<!-- /.card-body -->
+				</div>
+				
+			</div>
+			
+		</div>
+	<!-- /.row -->
+	<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Active Bedspaces</h3>
+					</div>
+					<!-- /.card-header -->
+					<div class="card-body" style="overflow: auto;">
+						<table id="datatable" class="table table-bordered table-hover">
+							<thead>
+								<tr>
+									<th></th>
+									<th>Bedspacer Name</th>
+									<th>Bedspacer Contacts</th>
+									<th>Date Registered</th>
+									<th>Status</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<th>+</th>
+									<td></td>
+
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+							</tbody>
+						</table>
+						
+					</div>
+					<!-- /.card-body -->
+				</div>
+				
+			</div>
+			
+		</div>
+	<!-- /.row -->
+	</div>
+	<!-- /.container-fluid -->
+</div>
+{% endblock %}
+{% block scripts %}
+	<!-- DataTables -->
+	<script src="{% static 'management/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+	<script src="{% static 'management/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+	<script src="{% static 'management/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+	<script src="{% static 'management/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+
+	<script>
+	$(function () {
+		$("#datatable").DataTable({
+		"responsive": true,
+		"autoWidth": false,
+		});
+		$('#simple-datatable').DataTable({
+		"paging": true,
+		"lengthChange": false,
+		"searching": false,
+		"ordering": true,
+		"info": true,
+		"autoWidth": true,
+		"responsive": true,
+		});
+	});
+
+	</script>
+{% endblock %}
