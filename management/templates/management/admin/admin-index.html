@@ -1,4 +1,4 @@
-{% extends 'management/admin/admin-base.html' %}{% load crispy_forms_tags %} {%load static %}{% block header %}Home{% endblock %}
+{% extends 'management/admin/admin-base.html' %}{% load crispy_forms_tags %}{%load static %}{% block header %}Home{% endblock %}
 {% block content %}
 <div class="content">
 	<div class="container-fluid">
@@ -6,29 +6,30 @@
 			<div class="col-12">
 				<div class="card">
 					<div class="card-header">
-						<h3 class="card-title">Active Residences</h3>
+						<h3 class="card-title">Active Units</h3>
 					</div>
 					<!-- /.card-header -->
 					<div class="card-body" style="overflow: auto;">
 						<table id="datatable" class="table table-bordered table-hover">
 							<thead>
 								<tr>
-									<th></th>
+									<th>Unit Name</th>
+									<th>Tenant Username</th>
 									<th>Tenant Name</th>
 									<th>Tenant Contacts</th>
 									<th>Date Registered</th>
-									<th>Status</th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr>
-									<th>+</th>
-									<td></td>
-
-									<td></td>
-									<td></td>
-									<td></td>
-								</tr>
+								{% for unit in active_units %}
+									<tr>
+										<th>{{ unit.unit.name }}</th>
+										<td>{{ unit.tenant.username }}</td>
+										<td>{{ unit.tenant.full_name }}</td>
+										<td>{{ unit.tenant.contacts }}</td>
+										<td>{{ unit.date_joined|date:'d/m/Y' }}</td>
+									</tr>
+								{% endfor %}
 							</tbody>
 						</table>
 						
@@ -51,22 +52,23 @@
 						<table id="datatable" class="table table-bordered table-hover">
 							<thead>
 								<tr>
-									<th></th>
+									<th>Bed No.</th>
+									<th>Bedspacer Username</th>
 									<th>Bedspacer Name</th>
 									<th>Bedspacer Contacts</th>
 									<th>Date Registered</th>
-									<th>Status</th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr>
-									<th>+</th>
-									<td></td>
-
-									<td></td>
-									<td></td>
-									<td></td>
-								</tr>
+								{% for bedspace in active_bedspaces %}
+									<tr>
+										<th>{{ bedspace.bedspace.bed_number }}</th>
+										<td>{{ bedspace.user.username }}</td>
+										<td>{{ bedspace.user.full_name }}</td>
+										<td>{{ bedspace.user.contacts }}</td>
+										<td>{{ bedspace.user.date_joined|date:'d/m/Y' }}</td>
+									</tr>
+								{% endfor %}
 							</tbody>
 						</table>
 						

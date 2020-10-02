@@ -24,7 +24,7 @@ class UserCreationForm(forms.ModelForm):
 class BedspaceCreationForm(forms.ModelForm):
     class Meta:
         model = Bedspace
-        fields = ['bed_no']
+        fields = ['bed_number']
 
 
 class BedspacingCreationForm(forms.ModelForm):
@@ -55,7 +55,14 @@ class DeviceCreationForm(forms.ModelForm):
 @login_required
 def index(request):
     if request.user.is_superuser:
-        return render(request, 'management/admin/admin-index.html')
+        active_units = Residence.objects.filter(
+            is_active=True)
+        active_bedspaces = Bedspacing.objects.filter(is_active=True).order_by('bedspace')
+        
+        return render(request, 'management/admin/admin-index.html', {
+            'active_units': active_units,
+            'active_bedspaces': active_bedspaces,
+        })
     else:
         return render(request, 'management/user-index.html')
 
@@ -104,3 +111,20 @@ def logout_view(request):
     """
     logout(request)
     return redirect('login')
+
+
+@login_required
+def bedspaces_view(request):
+    bedspaces = Bedspace.objects.all()
+
+    return render(request, 'management/admin/bedspaces.html', {
+        'bedspaces': bedspaces
+    })
+
+
+@login_required
+def units_view(request):
+    units = Unit.objects.all()
+    return render(request, 'management/admin/units.html', {
+        'units': units
+    })

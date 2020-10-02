@@ -1,0 +1,102 @@
+{% extends 'management/admin/admin-base.html' %}
+{%load static %}
+{% block header %}Bedspaces{% endblock %}
+{% block breadcrumb %}
+  <li class="breadcrumb-item active">View Bedspaces</li>
+{% endblock %}
+{% block content %}
+<!-- Main content -->
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="card card-primary">
+          <div class="card-header">
+            <div class="card-title">
+              Bedspaces
+            </div>
+          </div>
+          <div class="card-body">
+            <div>
+              <div class="btn-group w-100 mb-2">
+                <a class="btn btn-info active" href="javascript:void(0)" data-filter="all"> All items </a>
+                <a class="btn btn-info" href="javascript:void(0)" data-filter="1"> Active (GREEN) </a>
+                <a class="btn btn-info" href="javascript:void(0)" data-filter="2"> Inactive (WHITE) </a>
+                <a class="btn btn-info" href="javascript:void(0)" data-filter="3"> Unavailable (RED) </a>
+              </div>
+              <div class="mb-2">
+                <a class="btn btn-secondary" href="javascript:void(0)" data-shuffle> Shuffle items </a>
+                <div class="float-right">
+                  <select class="custom-select" style="width: auto;" data-sortOrder>
+                    <option value="index"> Sort by Position </option>
+                    <option value="sortData"> Sort by Custom Data </option>
+                  </select>
+                  <div class="btn-group">
+                    <a class="btn btn-default" href="javascript:void(0)" data-sortAsc> Ascending </a>
+                    <a class="btn btn-default" href="javascript:void(0)" data-sortDesc> Descending </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="filter-container p-0 row">
+                {% for bedspace in bedspaces %}
+                  <!-- Put the Bedspaces here -->
+                  {% if bedspace.is_active %}
+                    <div class="filtr-item col-sm-2"
+                    data-category="1"
+                    data-sort="{{ bedspace.bed_number }}">
+                        <img src="https://via.placeholder.com/300/008000?text={{ bedspace.bed_number }}" 
+                        class="img-fluid mb-2" 
+                        alt="{{ bedspace.bed_number }}"/>
+                    </div>
+                  {% elif not bedspace.is_active %}
+                    <div class="filtr-item col-sm-2"
+                    data-category="2"
+                    data-sort="{{ bedspace.bed_number }}">
+                        <img src="https://via.placeholder.com/300/FFFFFF?text={{ bedspace.bed_number }}" 
+                        class="img-fluid mb-2" 
+                        alt="{{ bedspace.bed_number }}"/>
+                    </div>
+                  {% else %}
+                    <div class="filtr-item col-sm-2"
+                    data-category="3"
+                    data-sort="{{ bedspace.bed_number }}">
+                        <img src="https://via.placeholder.com/300/FF0000?text={{ bedspace.bed_number }}" 
+                        class="img-fluid mb-2" 
+                        alt="{{ bedspace.bed_number }}"/>
+                    </div>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+{% endblock %}
+{% block scripts %}
+  <script src="{% static 'management/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
+  <script src="{% static 'management/plugins/ekko-lightbox/ekko-lightbox.min.js' %}"></script>
+  
+  <script src="{% static 'management/plugins/filterizr/jquery.filterizr.min.js' %}"></script>
+  <script>
+    $(function () {
+    $(document).on('click', '[data-toggle="lightbox"]', function(event) {
+      event.preventDefault();
+      $(this).ekkoLightbox({
+        alwaysShowClose: true
+      });
+    });
+
+    $('.filter-container').filterizr({gutterPixels: 3});
+    $('.btn[data-filter]').on('click', function() {
+      $('.btn[data-filter]').removeClass('active');
+      $(this).addClass('active');
+    });
+  });
+  </script>
+{% endblock %}

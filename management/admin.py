@@ -13,7 +13,7 @@ class ResidenceAdmin(admin.ModelAdmin):
 
 
 class BedspaceAdmin(admin.ModelAdmin):
-    list_display = ('bed_no', 'is_active', 'is_available')
+    list_display = ('bed_number', 'is_active', 'is_available')
 
 
 class UnitAdmin(admin.ModelAdmin):
@@ -31,7 +31,7 @@ class DeviceAdmin(admin.ModelAdmin):
 
 
 class BedspacingAdmin(admin.ModelAdmin):
-    list_display = ('user', 'date_joined', 'is_active',)
+    list_display = ('user', 'date_joined', 'is_active', 'bedspace')
     search_fields = ('user',)
     list_filter = ('is_active',)
 
