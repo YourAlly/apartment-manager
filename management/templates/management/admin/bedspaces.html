@@ -25,11 +25,11 @@
                 <a class="btn btn-info" href="javascript:void(0)" data-filter="3"> Unavailable (RED) </a>
               </div>
               <div class="mb-2">
-                <a class="btn btn-secondary" href="javascript:void(0)" data-shuffle> Shuffle items </a>
+                <a class="btn btn-secondary" href="javascript:void(0)" data-shuffle> Fun Button </a>
                 <div class="float-right">
                   <select class="custom-select" style="width: auto;" data-sortOrder>
-                    <option value="index"> Sort by Position </option>
-                    <option value="sortData"> Sort by Custom Data </option>
+                    <option value="index"> Sort by Number </option>
+                    <option value="sortData"> Sort by Status </option>
                   </select>
                   <div class="btn-group">
                     <a class="btn btn-default" href="javascript:void(0)" data-sortAsc> Ascending </a>
@@ -45,7 +45,7 @@
                   {% if bedspace.is_active %}
                     <div class="filtr-item col-sm-2"
                     data-category="1"
-                    data-sort="{{ bedspace.bed_number }}">
+                    data-sort="1">
                         <img src="https://via.placeholder.com/300/008000?text={{ bedspace.bed_number }}" 
                         class="img-fluid mb-2" 
                         alt="{{ bedspace.bed_number }}"/>
@@ -53,7 +53,7 @@
                   {% elif not bedspace.is_active %}
                     <div class="filtr-item col-sm-2"
                     data-category="2"
-                    data-sort="{{ bedspace.bed_number }}">
+                    data-sort="2">
                         <img src="https://via.placeholder.com/300/FFFFFF?text={{ bedspace.bed_number }}" 
                         class="img-fluid mb-2" 
                         alt="{{ bedspace.bed_number }}"/>

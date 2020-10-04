@@ -24,7 +24,7 @@
 								{% for unit in active_units %}
 									<tr>
 										<th>{{ unit.unit.name }}</th>
-										<td>{{ unit.tenant.username }}</td>
+										<td><a href="{% url 'user' user.id %}">{{ unit.tenant.username }}</a></td>
 										<td>{{ unit.tenant.full_name }}</td>
 										<td>{{ unit.tenant.contacts }}</td>
 										<td>{{ unit.date_joined|date:'d/m/Y' }}</td>
@@ -63,7 +63,7 @@
 								{% for bedspace in active_bedspaces %}
 									<tr>
 										<th>{{ bedspace.bedspace.bed_number }}</th>
-										<td>{{ bedspace.user.username }}</td>
+										<td><a href="{% url 'user' user.id %}">{{ bedspace.user.username }}</a></td>
 										<td>{{ bedspace.user.full_name }}</td>
 										<td>{{ bedspace.user.contacts }}</td>
 										<td>{{ bedspace.user.date_joined|date:'d/m/Y' }}</td>

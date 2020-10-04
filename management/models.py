@@ -35,14 +35,19 @@ class Unit(models.Model):
             return None
         query = self.residences.filter(is_active=True).first()
         if query:
-            return query.tenant.username
-        else:
+            return query.tenant.full_name()
+    
+    def current_user_id(self):
+        if not self.is_active:
             return None
+        query = self.residences.filter(is_active=True).first()
+        if query:
+            return query.tenant.id
 
 
 class Bedspace(models.Model):
     bed_number = models.IntegerField(unique=True)
-    is_available = models.BooleanField()
+    is_available = models.BooleanField(default=True)
     
     def __str__(self):
         return f'{self.bed_number}'
@@ -56,9 +61,14 @@ class Bedspace(models.Model):
             return None
         query = self.bedspacings.filter(is_active=True)
         if query:
-            return query.user.username
-        else:
+            return query.user.full_name()
+    
+    def current_user_id(self):
+        if not is_active:
             return None
+        query = self.bedspacings.filter(is_active=True)
+        if query:
+            return query.user.id
 
 class Bedspacing(models.Model):
     bedspace = models.ForeignKey(Bedspace, on_delete=models.CASCADE, related_name='bedspacings')

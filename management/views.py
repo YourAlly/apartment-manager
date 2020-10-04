@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect
-
 from .models import User, Residence, Account, Unit, Device, Bedspace, Bedspacing
 import apartment.settings
 import requests
@@ -7,48 +6,12 @@ from datetime import timedelta, datetime
 from django.utils import timezone
 from django.db.models import Q
 from django.contrib import messages
-from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
 from django.core.paginator import Paginator
-from django import forms
 from django.http import HttpResponse
+import management.forms as forms
 
-
-class UserCreationForm(forms.ModelForm):
-    class Meta:
-        model = User
-        fields = ['username', 'password', 'first_name', 'last_name']
-
-
-class BedspaceCreationForm(forms.ModelForm):
-    class Meta:
-        model = Bedspace
-        fields = ['bed_number']
-
-
-class BedspacingCreationForm(forms.ModelForm):
-    class Meta:
-        model = Bedspacing
-        fields = ['bedspace', 'user']
-
-
-class UnitCreationForm(forms.ModelForm):
-    class Meta:
-        model = Unit
-        fields = ['name', 'cost', 'details']
-
-
-class AccountCreationForm(forms.ModelForm):
-    class Meta:
-        model = Account
-        fields = ['name', 'notes', 'user', 'amount']
-
-
-class DeviceCreationForm(forms.ModelForm):
-    class Meta:
-        model = Device
-        fields = ['name', 'mac_address', 'owner']
 
 
 # Create your views here.
@@ -115,7 +78,10 @@ def logout_view(request):
 
 @login_required
 def bedspaces_view(request):
-    bedspaces = Bedspace.objects.all()
+    if not request.user.is_superuser:
+        return redirect('index')
+
+    bedspaces = Bedspace.objects.all().order_by('bed_number')
 
     return render(request, 'management/admin/bedspaces.html', {
         'bedspaces': bedspaces
@@ -124,7 +90,95 @@ def bedspaces_view(request):
 
 @login_required
 def units_view(request):
+    if not request.user.is_superuser:
+        return redirect('index')
+
     units = Unit.objects.all()
     return render(request, 'management/admin/units.html', {
         'units': units
+    })
+
+
+@login_required
+def users_view(request):
+    if not request.user.is_superuser:
+        return redirect('index')
+
+    users = User.objects.exclude(is_superuser=True).exclude(is_staff=True)
+    return render(request, 'management/admin/tenants_and_bedspacers.html', {
+        'users': users
+    })
+
+
+@login_required
+def user_view(request, user_id):
+    if not request.user.is_superuser:
+        return redirect('index')
+
+    user = User.objects.get(pk=user_id)
+    active_residences = user.residences.filter(is_active=True)
+    active_bedspaces = user.bedspacings.filter(is_active=True)
+    unsettled_accounts = user.accounts.filter(is_settled=False)
+    registered_devices = user.devices.all()
+
+    return render(request, 'management/admin/user.html', {
+        'user': user,
+        'active_residences': active_residences,
+        'active_bedspacings': active_bedspaces,
+        'unsettled_accounts': unsettled_accounts,
+        'registered_devices': registered_devices
+    })
+
+
+@login_required
+def user_creation_view(request):
+    if request.method == 'POST':
+        form = forms.RegistrationForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'User Created!')
+            return redirect('index')
+
+    else:
+        form = forms.RegistrationForm()
+
+    return render(request, 'management/admin/form.html', {
+        'form': form
+    })
+
+
+@login_required
+def bedspace_creation_view(request):
+    if request.method == 'POST':
+        form = forms.BedspaceCreationForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Bedspace Created!')
+            return redirect('bedspaces')
+
+    else:
+        form = forms.BedspaceCreationForm()
+
+    return render(request, 'management/admin/form.html', {
+        'form': form
+    })
+
+
+@login_required
+def bedspacing_creation_view(request):
+    if request.method == 'POST':
+        form = forms.BedspacingCreationForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Bedspacing Created!')
+            return redirect('index')
+
+    else:
+        form = forms.BedspacingCreationForm()
+
+    return render(request, 'management/admin/form.html', {
+        'form': form
     })

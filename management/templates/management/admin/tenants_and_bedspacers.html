@@ -1,6 +1,6 @@
 {% extends 'management/admin/admin-base.html' %}
 {% load static %}
-{% block header %}Purchases{% endblock %}
+{% block header %}Tenants and Bedspacers{% endblock %}
 {% block breadcrumb %}
 <li class="breadcrumb-item active">View Tenants and Bedspacers</li>
 {% endblock %}
@@ -11,33 +11,67 @@
 			<div class="col-12">
 				<div class="card">
 					<div class="card-header">
-						<h3 class="card-title">Tenants and Bedspacers Table</h3>
+						<h3 class="card-title">Active Tenants and Bedspacers Table</h3>
 					</div>
 					<!-- /.card-header -->
 					<div class="card-body" style="overflow: auto;">
 						<table id="datatable" class="table table-bordered table-hover">
 							<thead>
 								<tr>
-									<th></th>
-									<th></th>
-									<th></th>
-									<th></th>
-									<th></th>
-									<th></th>
+									<th>Username</th>
+									<th>Full Name</th>
+									<th>Tenant</th>
+									<th>Bedspacer</th>
 								</tr>
 							</thead>
 							<tbody>
+								{% for user in users %}
+									{% if user.is_tenant or user.is_bedspacer %}
+									<tr>
+										<th><a href="{% url 'user' user.id %}">{{ user.username }}</a></th>
+										<th>{{ user.full_name }}</th>
+										<td>{{ user.is_tenant }}</td>
+										<td>{{ user.is_bedspacer }} </td>
+									</tr>
+									{% endif %}
+								{% endfor %}
+							</tbody>
+						</table>
+						
+					</div>
+					<!-- /.card-body -->
+				</div>
+				
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Inactive Tenants and Bedspacers Table</h3>
+					</div>
+					<!-- /.card-header -->
+					<div class="card-body" style="overflow: auto;">
+						<table id="datatable" class="table table-bordered table-hover">
+							<thead>
 								<tr>
-									<th>+</th>
-									<th></th>
-									<td></td>
-									<td></td>
-
-									<td></td>
-									<td></td>
-									<td></td>
-									
+									<th>Username</th>
+									<th>Full Name</th>
+									<th>Is Tenant</th>
+									<th>Is Bedspacer</th>
 								</tr>
+							</thead>
+							<tbody>
+								{% for user in users %}
+									{% if not user.is_tenant and not user.is_bedspacer %}
+									<tr>
+										<th><a href="{% url 'user' user.id %}">{{ user.username }}</a></th>
+										<th>{{ user.full_name }}</th>
+										<td>{{ user.is_tenant }}</td>
+										<td>{{ user.is_bedspacer }} </td>
+									</tr>
+									{% endif %}
+								{% endfor %}
 							</tbody>
 						</table>
 						

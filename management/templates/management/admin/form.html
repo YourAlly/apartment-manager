@@ -1,4 +1,4 @@
-{% extends 'management/admin/base.html' %}{% load crispy_forms_tags %} {% block header %}{{ form_title }}{% endblock %}
+{% extends 'management/admin/admin-base.html' %}{% load crispy_forms_tags %} {% block header %}{{ form_title }}{% endblock %}
 {% block breadcrumb %}
 <li class="breadcrumb-item active">{{ form_title }}</li>
 {% endblock %} {% block content %}
@@ -16,7 +16,7 @@
 					<!-- form start -->
 					<div style="padding: 3%;">
 						<form role="form" method="POST">
-							{% csrf_token %} {{ form|crispy }}
+							{% csrf_token %}{{ form|crispy }}
 							<!-- /.card-body -->
 							<div class="card-footer">
 								<button type="submit" class="btn btn-primary" style="float: right;">Submit</button>
