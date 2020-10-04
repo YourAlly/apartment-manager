@@ -182,3 +182,75 @@ def bedspacing_creation_view(request):
     return render(request, 'management/admin/form.html', {
         'form': form
     })
+
+
+@login_required
+def unit_creation_view(request):
+    if request.method == 'POST':
+        form = forms.UnitCreationForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Unit Created!')
+            return redirect('index')
+
+    else:
+        form = forms.UnitCreationForm()
+
+    return render(request, 'management/admin/form.html', {
+        'form': form
+    })
+
+
+@login_required
+def account_creation_view(request):
+    if request.method == 'POST':
+        form = forms.AccountCreationForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Account Created!')
+            return redirect('index')
+
+    else:
+        form = forms.AccountCreationForm()
+
+    return render(request, 'management/admin/form.html', {
+        'form': form
+    })
+
+
+@login_required
+def device_creation_view(request):
+    if request.method == 'POST':
+        form = forms.DeviceCreationForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Device Created!')
+            return redirect('index')
+
+    else:
+        form = forms.DeviceCreationForm()
+
+    return render(request, 'management/admin/form.html', {
+        'form': form
+    })
+
+
+@login_required
+def residence_creation_view(request):
+    if request.method == 'POST':
+        form = forms.ResidenceCreationForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Residence Created!')
+            return redirect('index')
+
+    else:
+        form = forms.ResidenceCreationForm()
+
+    return render(request, 'management/admin/form.html', {
+        'form': form
+    })
