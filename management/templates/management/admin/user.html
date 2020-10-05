@@ -57,9 +57,9 @@
 						<table class="table table-bordered table-hover simple-datatable">
 							<thead>
 								<tr>
-									<th>Unit or Bedspace</th>
-									<th>Number or Name</th>
-									<th>Date Started</th>
+									<th>Unit or Bedspace:</th>
+									<th>Number or Name:</th>
+									<th>Date Started:</th>
 
 								</tr>
 							</thead>
@@ -72,7 +72,7 @@
 												{{ residence.unit.name }}
 											</a>
 										</td>
-										<td>{{ residence.date_joined }}</td>
+										<td>{{ residence.date_joined|date:'d/m/Y' }}</td>
 									</tr>
 								{% endfor %}
 								{% for bedspacing in active_bedspacings %}
@@ -83,7 +83,7 @@
 												{{ bedspacing.bedspace.bed_number }}
 											</a>
 										</td>
-										<td>{{ bedspacing.date_joined }}</td>
+										<td>{{ bedspacing.date_joined|date:'d/m/Y' }}</td>
 									</tr>
 								{% endfor %}
 							</tbody>
@@ -102,10 +102,11 @@
 						<table class="table table-bordered table-hover simple-datatable">
 							<thead>
 								<tr>
-									<th>Account Name</th>
-									<th>Notes</th>
-									<th>Amount</th>
-									<th>Date</th>
+									<th>Account Name:</th>
+									<th>Notes:</th>
+									<th>Amount:</th>
+									<th>Date:</th>
+									<th>Actions:</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -114,14 +115,15 @@
 										<th>{{ account.name }}</th>
 										<td>{{ account.notes }}</td>
 										<td>{{ account.amount }}</td>
-										<td>{{ account.date_added }}</td>
+										<td>{{ account.date_added|date:'d/m/Y' }}</td>
+										<td><a href="#">Settle</a></td>
 									</tr>
 								{% endfor %}
 							</tbody>
 						</table>
 						<div class="row no-print">
 							<div class="col-12">	
-							<a href="#"
+							<a href="{% url 'create-account' %}?user_id={{ user.id }}"
 									class="btn btn-default float-right">
 									<i class="fas fa-money-bill"></i> Add Account</a>
 							</div>
@@ -140,10 +142,10 @@
 						<table class="table table-bordered table-hover simple-datatable">
 							<thead>
 								<tr>
-									<th>Device Name</th>
-									<th>Mac Address</th>
-									<th>Date Registered</th>
-									<th>Remove</th>
+									<th>Device Name:</th>
+									<th>Mac Address:</th>
+									<th>Date Registered:</th>
+									<th>Remove:</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -151,7 +153,7 @@
 									<tr>
 										<th>{{ device.name }}</th>
 										<td>{{ device.mac_address }}</td>
-										<td>{{ device.date_added }}</td>
+										<td>{{ device.date_added|date:'d/m/Y' }}</td>
 										<td><a href="#">x</a></td>
 									</tr>
 								{% endfor %}

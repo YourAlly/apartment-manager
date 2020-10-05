@@ -37,7 +37,7 @@ class UnitCreationForm(forms.ModelForm):
 class ResidenceCreationForm(forms.ModelForm):
     class Meta:
         model = Residence
-        fields = ['tenant', 'unit']
+        fields = ['unit', 'tenant']
 
 
 class AccountCreationForm(forms.ModelForm):
@@ -53,4 +53,4 @@ class DeviceCreationForm(forms.ModelForm):
 
 
 class ConfirmationForm(forms.Form):
-    confirm = forms.BooleanField(required=True, label='Are you sure about this action?')
+    confirm = forms.BooleanField(required=False, label='Are you sure about this action?')

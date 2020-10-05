@@ -68,7 +68,7 @@ class Bedspacing(models.Model):
                 ) + f' - {self.bedspace.bed_number}' 
 
     def clean(self):
-        if self.bedspace.is_active():
+        if self.bedspace.is_active() and self.is_active:
             raise ValidationError('The Selected bedspace is Already Active',
                 code='invalid')
         
@@ -91,11 +91,11 @@ class Residence(models.Model):
         ) + f' - {self.unit.name}'
 
     def clean(self):
-        if self.unit.is_active():
+        if self.unit.is_active() and self.is_active:
             raise ValidationError('The Selected Unit is Already Active',
                     code='invalid')
         
-        if not self.unit.is_available():
+        if not self.unit.is_available:
             raise ValidationError('The Selected Unit is Currently Unavailable',
                                   code='invalid')
 

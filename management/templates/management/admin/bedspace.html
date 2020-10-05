@@ -53,7 +53,7 @@
 									class="btn btn-default float-right" style="margin-right: 1%;">
 									<i class="fas fa-edit"></i> Deactivate Current User</a>
 							{% elif not bedspace.is_active and bedspace.is_available %}
-								<a href="#"
+								<a href="{% url 'create-bedspacing' %}?bed_no={{bedspace.bed_number}}"
 									class="btn btn-default float-right" style="margin-right: 1%;">
 									<i class="fas fa-edit"></i> Register New User</a>
 							{% endif %}
@@ -75,10 +75,10 @@
 						<table class="table table-bordered table-hover datatable">
 							<thead>
 								<tr>
-									<th>Account Name</th>
-									<th>Notes</th>
-									<th>Amount</th>
-									<th>Date</th>
+									<th>Account Name:</th>
+									<th>Notes:</th>
+									<th>Amount:</th>
+									<th>Date:</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -87,7 +87,7 @@
 										<th>{{ account.name }}</th>
 										<td>{{ account.notes }}</td>
 										<td>{{ account.amount }}</td>
-										<td>{{ account.date_added }}</td>
+										<td>{{ account.date_added|date:'d/m/Y' }}</td>
 									</tr>
 								{% endfor %}
 							</tbody>
@@ -95,7 +95,7 @@
 						{% if bedspace.is_active %}
 							<div class="row no-print">
 								<div class="col-12">	
-								<a href="#"
+								<a href="{% url 'create-account' %}?user_id={{ bedspace.current_user.id }}"
 										class="btn btn-default float-right">
 										<i class="fas fa-money-bill"></i> Add Account</a>
 								</div>
@@ -115,10 +115,10 @@
 						<table class="table table-bordered table-hover simple-datatable">
 							<thead>
 								<tr>
-									<th>Device Name</th>
-									<th>Mac Address</th>
-									<th>Date Registered</th>
-									<th>Remove</th>
+									<th>Device Name:</th>
+									<th>Mac Address:</th>
+									<th>Date Registered:</th>
+									<th>Remove:</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -126,7 +126,7 @@
 									<tr>
 										<th>{{ device.name }}</th>
 										<td>{{ device.mac_address }}</td>
-										<td>{{ device.date_added }}</td>
+										<td>{{ device.date_added|date:'d/m/Y' }}</td>
 										<td><a href="#">x</a></td>
 									</tr>
 								{% endfor %}
@@ -155,10 +155,10 @@
 						<table class="table table-bordered table-hover datatable">
 							<thead>
 								<tr>
-									<th>Username</th>
-									<th>Full name</th>
-									<th>Date Activated</th>
-									<th>Date Deactivated</th>
+									<th>Username:</th>
+									<th>Full name:</th>
+									<th>Date Activated:</th>
+									<th>Date Deactivated:</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -170,8 +170,8 @@
 											</a>
 										</th>
 										<td>{{ bedspacing.bedspacer.full_name }}</td>
-										<td>{{ bedspacing.date_joined }}</td>
-										<td>{{ bedspacing.date_left }}</td>
+										<td>{{ bedspacing.date_joined|date:'d/m/Y' }}</td>
+										<td>{{ bedspacing.date_left|date:'d/m/Y' }}</td>
 									</tr>
 								{% endfor %}
 							</tbody>

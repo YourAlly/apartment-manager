@@ -303,6 +303,7 @@ def residence_creation_view(request):
         messages.warning(request, 'You are not allowed to access this page')
         return redirect('index')
 
+
     if request.method == 'POST':
         form = forms.ResidenceCreationForm(request.POST)
 
@@ -312,7 +313,17 @@ def residence_creation_view(request):
             return redirect('index')
 
     else:
-        form = forms.ResidenceCreationForm()
+        unit_id = request.GET.get('unit_id')
+        if unit_id:
+            try:
+                unit = Unit.objects.get(pk=unit_id)
+            except:
+                messages.warning(request, 'Unit not found')
+                form = forms.ResidenceCreationForm()
+            else: 
+                form = forms.ResidenceCreationForm(initial={'unit': unit})
+        else:
+            form = forms.ResidenceCreationForm()
 
     return render(request, 'management/admin/form.html', {
         'form_title': 'Residence Creation Form',
@@ -325,6 +336,7 @@ def bedspace_creation_view(request):
     if not request.user.is_superuser:
         messages.warning(request, 'You are not allowed to access this page')
         return redirect('index')
+        
 
     if request.method == 'POST':
         form = forms.BedspaceCreationForm(request.POST)
@@ -358,7 +370,18 @@ def bedspacing_creation_view(request):
             return redirect('index')
 
     else:
-        form = forms.BedspacingCreationForm()
+        bed_no = request.GET.get('bed_no')
+        if bed_no:
+            try:
+                bedspace = Bedspace.objects.get(bed_number=bed_no)
+            except:
+                messages.warning(request, 'Bedspace not found')
+                form = forms.BedspacingCreationForm()
+            else:
+                form = forms.BedspacingCreationForm(initial={'bedspace': bedspace})
+        
+        else:
+            form = forms.BedspacingCreationForm()
 
     return render(request, 'management/admin/form.html', {
         'form_title': 'Bedspacing Creation Form',
@@ -381,7 +404,18 @@ def account_creation_view(request):
             return redirect('index')
 
     else:
-        form = forms.AccountCreationForm()
+        user_id = request.GET.get('user_id')
+        if user_id:
+            try:
+                user = User.objects.get(pk=user_id)
+            except:
+                messages.warning(request, 'User not found')
+                form = forms.AccountCreationForm()
+            else:
+                form = forms.AccountCreationForm(initial={'user': user})
+
+        else:
+            form = forms.AccountCreationForm()
 
     return render(request, 'management/admin/form.html', {
         'form_title': 'Account Creation Form',
@@ -397,14 +431,24 @@ def device_creation_view(request):
 
     if request.method == 'POST':
         form = forms.DeviceCreationForm(request.POST)
-
         if form.is_valid():
             form.save()
             messages.success(request, 'Device Created!')
             return redirect('index')
 
     else:
-        form = forms.DeviceCreationForm()
+        user_id = request.GET.get('user_id')
+        if user_id:
+            try:
+                user = User.objects.get(pk=user_id)
+            except:
+                messages.warning(request, 'User not found')
+                form = forms.DeviceCreationForm()
+            else:
+                form = forms.DeviceCreationForm(initial={'user': user})
+
+        else:
+            form = forms.DeviceCreationForm()
 
     return render(request, 'management/admin/form.html', {
         'form_title': 'Device Creation Form',
