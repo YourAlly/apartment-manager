@@ -10,7 +10,6 @@ import management.forms as forms
 import apartment.settings
 import requests
 
-
 # Create your views here.
 @login_required
 def index(request):
@@ -175,29 +174,6 @@ def bedspace_view(request, bedspace_no):
     })
 
 
-@login_required
-def user_creation_view(request):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
-
-    if request.method == 'POST':
-        form = forms.RegistrationForm(request.POST)
-
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'User Created!')
-            return redirect('index')
-
-    else:
-        form = forms.RegistrationForm()
-
-    return render(request, 'management/admin/form.html', {
-        'form_title': 'User Creation Form',
-        'form': form
-    })
-
-
 # Deactivation Views
 @login_required
 def bedspace_deactivation_view(request, bed_no):
@@ -273,7 +249,31 @@ def unit_deactivation_view(request, unit_id):
 
             })
 
+
 # Form Views
+@login_required
+def user_creation_view(request):
+    if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
+        return redirect('index')
+
+    if request.method == 'POST':
+        form = forms.RegistrationForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'User Created!')
+            return redirect('index')
+
+    else:
+        form = forms.RegistrationForm()
+
+    return render(request, 'management/admin/form.html', {
+        'form_title': 'User Creation Form',
+        'form': form
+    })
+
+
 @login_required
 def unit_creation_view(request):
     if not request.user.is_superuser:
