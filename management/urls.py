@@ -8,6 +8,7 @@ urlpatterns = [
     path('users', views.users_view, name='users'),
     path('users/<int:user_id>', views.user_view, name='user'),
     path('units', views.units_view, name='units'),
+    path('units/<int:unit_id>', views.unit_view, name='unit'),
     path('bedspaces', views.bedspaces_view, name='bedspaces'),
 
     # Forms

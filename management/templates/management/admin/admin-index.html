@@ -10,7 +10,7 @@
 					</div>
 					<!-- /.card-header -->
 					<div class="card-body" style="overflow: auto;">
-						<table id="datatable" class="table table-bordered table-hover">
+						<table class="table table-bordered table-hover datatable">
 							<thead>
 								<tr>
 									<th>Unit Name</th>
@@ -24,7 +24,7 @@
 								{% for unit in active_units %}
 									<tr>
 										<th>{{ unit.unit.name }}</th>
-										<td><a href="{% url 'user' user.id %}">{{ unit.tenant.username }}</a></td>
+										<td><a href="{% url 'user' unit.tenant.id %}">{{ unit.tenant.username }}</a></td>
 										<td>{{ unit.tenant.full_name }}</td>
 										<td>{{ unit.tenant.contacts }}</td>
 										<td>{{ unit.date_joined|date:'d/m/Y' }}</td>
@@ -49,7 +49,7 @@
 					</div>
 					<!-- /.card-header -->
 					<div class="card-body" style="overflow: auto;">
-						<table id="datatable" class="table table-bordered table-hover">
+						<table class="table table-bordered table-hover datatable">
 							<thead>
 								<tr>
 									<th>Bed No.</th>
@@ -63,10 +63,10 @@
 								{% for bedspace in active_bedspaces %}
 									<tr>
 										<th>{{ bedspace.bedspace.bed_number }}</th>
-										<td><a href="{% url 'user' user.id %}">{{ bedspace.user.username }}</a></td>
-										<td>{{ bedspace.user.full_name }}</td>
-										<td>{{ bedspace.user.contacts }}</td>
-										<td>{{ bedspace.user.date_joined|date:'d/m/Y' }}</td>
+										<td><a href="{% url 'user' bedspace.bedspacer.id %}">{{ bedspace.bedspacer.username }}</a></td>
+										<td>{{ bedspace.bedspacer.full_name }}</td>
+										<td>{{ bedspace.bedspacer.contacts }}</td>
+										<td>{{ bedspace.bedspacer.date_joined|date:'d/m/Y' }}</td>
 									</tr>
 								{% endfor %}
 							</tbody>
@@ -92,21 +92,21 @@
 	<script src="{% static 'management/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
 
 	<script>
-	$(function () {
-		$("#datatable").DataTable({
-		"responsive": true,
-		"autoWidth": false,
+		$(function () {
+			$(".datatable").DataTable({
+			"responsive": true,
+			"autoWidth": false,
+			});
+			$('.simple-datatable').DataTable({
+			"paging": true,
+			"lengthChange": false,
+			"searching": false,
+			"ordering": true,
+			"info": true,
+			"autoWidth": true,
+			"responsive": true,
+			});
 		});
-		$('#simple-datatable').DataTable({
-		"paging": true,
-		"lengthChange": false,
-		"searching": false,
-		"ordering": true,
-		"info": true,
-		"autoWidth": true,
-		"responsive": true,
-		});
-	});
-
+		
 	</script>
 {% endblock %}

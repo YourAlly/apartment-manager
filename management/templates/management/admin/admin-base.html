@@ -39,7 +39,7 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="{% url 'index' %}" class="brand-link">
-      <img src="{% static 'management/dist/img/Company-logo.png' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+      <img src="https://via.placeholder.com/350" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
            style="opacity: .8">
       <span class="brand-text font-weight-light">Sample</span>
     </a>
@@ -125,7 +125,8 @@
             <ul class="nav nav-treeview">
               
               <li class="nav-item">
-                <a href="#" class="nav-link disabled">
+                <a href="{% url 'create-unit' %}" class="nav-link{% url 'create-unit' as the_url %}
+                {% if request.get_full_path == the_url %}active{% endif %}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Add Unit
                     <!-- <span class="right badge badge-danger">New</span> -->
@@ -134,7 +135,8 @@
               </li>
               
               <li class="nav-item">
-                <a href="#" class="nav-link disabled">
+                <a href="{% url 'create-bedspace' %}" class="nav-link{% url 'create-bedspace' as the_url %}
+                {% if request.get_full_path == the_url %}active{% endif %}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Add Bedspace
                     <!-- <span class="right badge badge-danger">New</span> -->
@@ -143,9 +145,10 @@
               </li>
 
               <li class="nav-item">
-                <a href="#" class="nav-link disabled">
+                <a href="{% url 'create-user' %}" class="nav-link{% url 'create-user' as the_url %}
+                {% if request.get_full_path == the_url %}active{% endif %}">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Create New User Account</p>
+                  <p>Create New User</p>
                 </a>
               </li>
 

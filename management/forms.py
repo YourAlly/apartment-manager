@@ -25,7 +25,7 @@ class BedspaceCreationForm(forms.ModelForm):
 class BedspacingCreationForm(forms.ModelForm):
     class Meta:
         model = Bedspacing
-        fields = ['bedspace', 'user']
+        fields = ['bedspace', 'bedspacer']
 
 
 class UnitCreationForm(forms.ModelForm):

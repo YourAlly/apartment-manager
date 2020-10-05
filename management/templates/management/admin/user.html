@@ -1,7 +1,7 @@
 {% extends 'management/admin/admin-base.html' %}{% load static %}{% block header %}User{% endblock %}
 {% block breadcrumb %}
-<li class="breadcrumb-item"><a href="{% url 'users' %}">View Tenants and Bedspacers</a></li>
-<li class="breadcrumb-item active">View User</li>
+	<li class="breadcrumb-item"><a href="{% url 'users' %}">View Tenants and Bedspacers</a></li>
+	<li class="breadcrumb-item active">View User</li>
 {% endblock %}
 {% block content %}
 <section class="content">
@@ -46,7 +46,7 @@
 					</div>
 					<!-- /.card-header -->
 					<div class="card-body" style="overflow: auto;">
-						<table id="simple-datatable" class="table table-bordered table-hover">
+						<table class="table table-bordered table-hover simple-datatable">
 							<thead>
 								<tr>
 									<th>Unit or Bedspace</th>
@@ -83,7 +83,7 @@
 					</div>
 					<!-- /.card-header -->
 					<div class="card-body" style="overflow: auto;">
-						<table id="simple-datatable" class="table table-bordered table-hover">
+						<table class="table table-bordered table-hover simple-datatable">
 							<thead>
 								<tr>
 									<th>Account Name</th>
@@ -114,7 +114,7 @@
 					</div>
 					<!-- /.card-header -->
 					<div class="card-body" style="overflow: auto;">
-						<table id="simple-datatable" class="table table-bordered table-hover">
+						<table class="table table-bordered table-hover simple-datatable">
 							<thead>
 								<tr>
 									<th>Device Name</th>
@@ -153,11 +153,11 @@
 
 	<script>
 	$(function () {
-		$("#datatable").DataTable({
+		$(".datatable").DataTable({
 		"responsive": true,
 		"autoWidth": false,
 		});
-		$('#simple-datatable').DataTable({
+		$('.simple-datatable').DataTable({
 		"paging": true,
 		"lengthChange": false,
 		"searching": false,

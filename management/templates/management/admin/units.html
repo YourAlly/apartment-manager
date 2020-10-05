@@ -22,7 +22,15 @@
                 <div class="row">
                   <div class="col-7">
                     <h2 class="lead"><b>{{ unit.name }}</b></h2>
-                    <p class="text-muted text-sm"><b>Current Tenant: </b> <a href="{% url 'user' unit.current_user_id %}">{{ unit.current_user }}</a> </p>
+                    <p class="text-muted text-sm"><b>Current Tenant: </b> 
+                      {% if unit.is_active %}
+                        <a href="{% url 'user' unit.current_user.id %}">
+                          {{ unit.current_user.full_name }}
+                        </a> 
+                      {% else %}
+                        None
+                      {% endif %}
+                    </p>
                     <ul class="ml-4 mb-0 fa-ul text-muted">
                       <li class="small"><span class="fa-li"><i class="fas fa-lg fa-building"></i></span> Cost: {{ unit.cost }}</li>
                       <li class="small"><span class="fa-li"><i class="fas fa-lg fa-phone"></i></span> Status: 
@@ -40,7 +48,7 @@
               </div>
               <div class="card-footer">
                 <div class="text-right">
-                  <a href="#" class="btn btn-sm btn-primary">
+                  <a href="{% url 'unit' unit.id %}" class="btn btn-sm btn-primary">
                     <i class="fas fa-user"></i> View Details
                   </a>
                 </div>

@@ -31,8 +31,8 @@ class DeviceAdmin(admin.ModelAdmin):
 
 
 class BedspacingAdmin(admin.ModelAdmin):
-    list_display = ('user', 'date_joined', 'is_active', 'bedspace')
-    search_fields = ('user',)
+    list_display = ('bedspacer', 'date_joined', 'is_active', 'bedspace')
+    search_fields = ('bedspacer', 'bedspace')
     list_filter = ('is_active',)
 
 

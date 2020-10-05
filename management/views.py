@@ -1,17 +1,14 @@
 from django.shortcuts import render, redirect
 from .models import User, Residence, Account, Unit, Device, Bedspace, Bedspacing
-import apartment.settings
-import requests
-from datetime import timedelta, datetime
 from django.utils import timezone
 from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
 from django.core.paginator import Paginator
-from django.http import HttpResponse
 import management.forms as forms
-
+import apartment.settings
+import requests
 
 
 # Create your views here.
@@ -31,9 +28,6 @@ def index(request):
 
 
 def login_view(request):
-    """
-        Login Page
-    """
     if request.method == "POST":
         # Attempt to sign user in
         username = request.POST.get("username")
@@ -69,16 +63,38 @@ def login_view(request):
 
 @login_required
 def logout_view(request):
-    """
-        Logs the user out
-    """
     logout(request)
     return redirect('login')
 
 
 @login_required
+def users_view(request):
+    if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
+        return redirect('index')
+
+    users = User.objects.exclude(is_superuser=True).exclude(is_staff=True)
+    return render(request, 'management/admin/tenants_and_bedspacers.html', {
+        'users': users
+    })
+
+
+@login_required
+def units_view(request):
+    if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
+        return redirect('index')
+
+    units = Unit.objects.all()
+    return render(request, 'management/admin/units.html', {
+        'units': units
+    })
+
+
+@login_required
 def bedspaces_view(request):
     if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
         return redirect('index')
 
     bedspaces = Bedspace.objects.all().order_by('bed_number')
@@ -89,30 +105,9 @@ def bedspaces_view(request):
 
 
 @login_required
-def units_view(request):
-    if not request.user.is_superuser:
-        return redirect('index')
-
-    units = Unit.objects.all()
-    return render(request, 'management/admin/units.html', {
-        'units': units
-    })
-
-
-@login_required
-def users_view(request):
-    if not request.user.is_superuser:
-        return redirect('index')
-
-    users = User.objects.exclude(is_superuser=True).exclude(is_staff=True)
-    return render(request, 'management/admin/tenants_and_bedspacers.html', {
-        'users': users
-    })
-
-
-@login_required
 def user_view(request, user_id):
     if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
         return redirect('index')
 
     user = User.objects.get(pk=user_id)
@@ -131,7 +126,20 @@ def user_view(request, user_id):
 
 
 @login_required
+def unit_view(request, unit_id):
+    if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
+        return redirect('index')
+
+    unit = Unit.objects.get(pk=unit_id)
+
+
+@login_required
 def user_creation_view(request):
+    if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
+        return redirect('index')
+
     if request.method == 'POST':
         form = forms.RegistrationForm(request.POST)
 
@@ -144,48 +152,17 @@ def user_creation_view(request):
         form = forms.RegistrationForm()
 
     return render(request, 'management/admin/form.html', {
-        'form': form
-    })
-
-
-@login_required
-def bedspace_creation_view(request):
-    if request.method == 'POST':
-        form = forms.BedspaceCreationForm(request.POST)
-
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Bedspace Created!')
-            return redirect('bedspaces')
-
-    else:
-        form = forms.BedspaceCreationForm()
-
-    return render(request, 'management/admin/form.html', {
-        'form': form
-    })
-
-
-@login_required
-def bedspacing_creation_view(request):
-    if request.method == 'POST':
-        form = forms.BedspacingCreationForm(request.POST)
-
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Bedspacing Created!')
-            return redirect('index')
-
-    else:
-        form = forms.BedspacingCreationForm()
-
-    return render(request, 'management/admin/form.html', {
+        'form_title': 'User Creation Form',
         'form': form
     })
 
 
 @login_required
 def unit_creation_view(request):
+    if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
+        return redirect('index')
+
     if request.method == 'POST':
         form = forms.UnitCreationForm(request.POST)
 
@@ -198,48 +175,17 @@ def unit_creation_view(request):
         form = forms.UnitCreationForm()
 
     return render(request, 'management/admin/form.html', {
-        'form': form
-    })
-
-
-@login_required
-def account_creation_view(request):
-    if request.method == 'POST':
-        form = forms.AccountCreationForm(request.POST)
-
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Account Created!')
-            return redirect('index')
-
-    else:
-        form = forms.AccountCreationForm()
-
-    return render(request, 'management/admin/form.html', {
-        'form': form
-    })
-
-
-@login_required
-def device_creation_view(request):
-    if request.method == 'POST':
-        form = forms.DeviceCreationForm(request.POST)
-
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Device Created!')
-            return redirect('index')
-
-    else:
-        form = forms.DeviceCreationForm()
-
-    return render(request, 'management/admin/form.html', {
+        'form_title': 'Unit Creation Form',
         'form': form
     })
 
 
 @login_required
 def residence_creation_view(request):
+    if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
+        return redirect('index')
+
     if request.method == 'POST':
         form = forms.ResidenceCreationForm(request.POST)
 
@@ -252,5 +198,112 @@ def residence_creation_view(request):
         form = forms.ResidenceCreationForm()
 
     return render(request, 'management/admin/form.html', {
+        'form_title': 'Residence Creation Form',
         'form': form
     })
+
+
+@login_required
+def bedspace_creation_view(request):
+    if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
+        return redirect('index')
+
+    if request.method == 'POST':
+        form = forms.BedspaceCreationForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Bedspace Created!')
+            return redirect('bedspaces')
+
+    else:
+        form = forms.BedspaceCreationForm()
+
+    return render(request, 'management/admin/form.html', {
+        'form_title': 'Bedspace Creation Form',
+        'form': form
+    })
+
+
+@login_required
+def bedspacing_creation_view(request):
+    if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
+        return redirect('index')
+
+    if request.method == 'POST':
+        form = forms.BedspacingCreationForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Bedspacing Created!')
+            return redirect('index')
+
+    else:
+        form = forms.BedspacingCreationForm()
+
+    return render(request, 'management/admin/form.html', {
+        'form_title': 'Bedspacing Creation Form',
+        'form': form
+    })
+
+
+@login_required
+def account_creation_view(request):
+    if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
+        return redirect('index')
+
+    if request.method == 'POST':
+        form = forms.AccountCreationForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Account Created!')
+            return redirect('index')
+
+    else:
+        form = forms.AccountCreationForm()
+
+    return render(request, 'management/admin/form.html', {
+        'form_title': 'Account Creation Form',
+        'form': form
+    })
+
+
+@login_required
+def device_creation_view(request):
+    if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
+        return redirect('index')
+
+    if request.method == 'POST':
+        form = forms.DeviceCreationForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Device Created!')
+            return redirect('index')
+
+    else:
+        form = forms.DeviceCreationForm()
+
+    return render(request, 'management/admin/form.html', {
+        'form_title': 'Device Creation Form',
+        'form': form
+    })
+
+
+@login_required
+def unit_view(request, unit_id):
+    try:
+        unit = Unit.objects.get(pk=unit_id)
+    except:
+        return render(request, 'management/admin/admin-404.html')
+        
+    inactive_residences = unit.residences.filter(is_active=False)
+    return render(request, 'management/admin/unit.html', {
+        'unit': unit,
+        'inactive_residences': inactive_residences
+        })

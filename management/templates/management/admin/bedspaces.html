@@ -42,7 +42,7 @@
               <div class="filter-container p-0 row">
                 {% for bedspace in bedspaces %}
                   <!-- Put the Bedspaces here -->
-                  {% if bedspace.is_active %}
+                  {% if bedspace.is_active and bedspace.is_available %}
                     <div class="filtr-item col-sm-2"
                     data-category="1"
                     data-sort="1">
@@ -50,7 +50,7 @@
                         class="img-fluid mb-2" 
                         alt="{{ bedspace.bed_number }}"/>
                     </div>
-                  {% elif not bedspace.is_active %}
+                  {% elif not bedspace.is_active and bedspace.is_available %}
                     <div class="filtr-item col-sm-2"
                     data-category="2"
                     data-sort="2">
