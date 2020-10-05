@@ -80,6 +80,27 @@ def users_view(request):
 
 
 @login_required
+def user_view(request, user_id):
+    if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
+        return redirect('index')
+
+    user = User.objects.get(pk=user_id)
+    active_residences = user.residences.filter(is_active=True)
+    active_bedspacings = user.bedspacings.filter(is_active=True)
+    unsettled_accounts = user.accounts.filter(is_settled=False)
+    registered_devices = user.devices.all()
+
+    return render(request, 'management/admin/user.html', {
+        'user': user,
+        'active_residences': active_residences,
+        'active_bedspacings': active_bedspacings,
+        'unsettled_accounts': unsettled_accounts,
+        'registered_devices': registered_devices
+    })
+
+
+@login_required
 def units_view(request):
     if not request.user.is_superuser:
         messages.warning(request, 'You are not allowed to access this page')
@@ -88,6 +109,27 @@ def units_view(request):
     units = Unit.objects.all()
     return render(request, 'management/admin/units.html', {
         'units': units
+    })
+
+
+@login_required
+def unit_view(request, unit_id):
+    try:
+        unit = Unit.objects.get(pk=unit_id)
+    except:
+        return render(request, 'management/admin/admin-404.html')
+
+    if unit.is_active():
+        unsettled_accounts = unit.current_user().accounts.filter(is_settled=False)
+    else:
+        unsettled_accounts = None
+
+    inactive_residences = unit.residences.filter(is_active=False)
+
+    return render(request, 'management/admin/unit.html', {
+        'unit': unit,
+        'inactive_residences': inactive_residences,
+        'unsettled_accounts': unsettled_accounts or None
     })
 
 
@@ -105,33 +147,24 @@ def bedspaces_view(request):
 
 
 @login_required
-def user_view(request, user_id):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
+def bedspace_view(request, bedspace_no):
+    try:
+        bedspace = Bedspace.objects.get(bed_number=bedspace_no)
+    except:
+        return render(request, 'management/admin/admin-404.html')
 
-    user = User.objects.get(pk=user_id)
-    active_residences = user.residences.filter(is_active=True)
-    active_bedspaces = user.bedspacings.filter(is_active=True)
-    unsettled_accounts = user.accounts.filter(is_settled=False)
-    registered_devices = user.devices.all()
+    if bedspace.is_active():
+        unsettled_accounts = bedspace.current_user().accounts.filter(is_settled=False)
+    else:
+        unsettled_accounts = None
 
-    return render(request, 'management/admin/user.html', {
-        'user': user,
-        'active_residences': active_residences,
-        'active_bedspacings': active_bedspaces,
-        'unsettled_accounts': unsettled_accounts,
-        'registered_devices': registered_devices
+    inactive_bedspacings = bedspace.bedspacings.filter(is_active=False)
+
+    return render(request, 'management/admin/bedspace.html', {
+        'bedspace': bedspace,
+        'inactive_bedspacings': inactive_bedspacings,
+        'unsettled_accounts': unsettled_accounts
     })
-
-
-@login_required
-def unit_view(request, unit_id):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
-
-    unit = Unit.objects.get(pk=unit_id)
 
 
 @login_required
@@ -293,17 +326,3 @@ def device_creation_view(request):
         'form_title': 'Device Creation Form',
         'form': form
     })
-
-
-@login_required
-def unit_view(request, unit_id):
-    try:
-        unit = Unit.objects.get(pk=unit_id)
-    except:
-        return render(request, 'management/admin/admin-404.html')
-        
-    inactive_residences = unit.residences.filter(is_active=False)
-    return render(request, 'management/admin/unit.html', {
-        'unit': unit,
-        'inactive_residences': inactive_residences
-        })

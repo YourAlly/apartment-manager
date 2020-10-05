@@ -15,7 +15,7 @@ class User(AbstractUser):
 
     def full_name(self):
         return ' '.join([self.first_name, self.last_name]
-                ) if self.first_name or self.last_name else None
+                ) if self.first_name or self.last_name else f'{self.username} (username)'
 
 
 class Unit(models.Model):

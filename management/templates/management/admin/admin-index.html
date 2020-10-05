@@ -23,8 +23,16 @@
 							<tbody>
 								{% for unit in active_units %}
 									<tr>
-										<th>{{ unit.unit.name }}</th>
-										<td><a href="{% url 'user' unit.tenant.id %}">{{ unit.tenant.username }}</a></td>
+										<th>
+											<a href="{% url 'unit' unit.unit.id %}">
+												{{ unit.unit.name }}
+											</a>
+										</th>
+										<td>
+											<a href="{% url 'user' unit.tenant.id %}">
+												{{ unit.tenant.username }}
+											</a>
+										</td>
 										<td>{{ unit.tenant.full_name }}</td>
 										<td>{{ unit.tenant.contacts }}</td>
 										<td>{{ unit.date_joined|date:'d/m/Y' }}</td>
@@ -62,7 +70,11 @@
 							<tbody>
 								{% for bedspace in active_bedspaces %}
 									<tr>
-										<th>{{ bedspace.bedspace.bed_number }}</th>
+										<th>
+											<a href="{% url 'unit' bedspace.bedspace.bed_number %}">
+												{{ bedspace.bedspace.bed_number }}
+											</a>
+										</th>
 										<td><a href="{% url 'user' bedspace.bedspacer.id %}">{{ bedspace.bedspacer.username }}</a></td>
 										<td>{{ bedspace.bedspacer.full_name }}</td>
 										<td>{{ bedspace.bedspacer.contacts }}</td>
@@ -107,6 +119,6 @@
 			"responsive": true,
 			});
 		});
-		
+
 	</script>
 {% endblock %}

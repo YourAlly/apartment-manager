@@ -10,6 +10,7 @@ urlpatterns = [
     path('units', views.units_view, name='units'),
     path('units/<int:unit_id>', views.unit_view, name='unit'),
     path('bedspaces', views.bedspaces_view, name='bedspaces'),
+    path('bedspaces/<int:bedspace_no>', views.bedspace_view, name='bedspace'),
 
     # Forms
     path('create/user', views.user_creation_view, name='create-user'),

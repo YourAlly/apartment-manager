@@ -59,15 +59,23 @@
 								{% for residence in active_residences %}
 									<tr>
 										<th>Unit</th>
-										<td>{{ residence.unit.name }}</td>
+										<td>
+											<a href="{% url 'unit' residence.unit.id %}">
+												{{ residence.unit.name }}
+											</a>
+										</td>
 										<td>{{ residence.date_joined }}</td>
 									</tr>
 								{% endfor %}
-								{% for bedspace in active_bedspaces %}
+								{% for bedspacing in active_bedspacings %}
 									<tr>
 										<th>Bedspace</th>
-										<td>{{ bedspace.unit.name }}</td>
-										<td>{{ bedspace.date_joined }}</td>
+										<td>
+											<a href="{% url 'bedspace' bedspacing.bedspace.bed_number %}">
+												{{ bedspacing.bedspace.bed_number }}
+											</a>
+										</td>
+										<td>{{ bedspacing.date_joined }}</td>
 									</tr>
 								{% endfor %}
 							</tbody>

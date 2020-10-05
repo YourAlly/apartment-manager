@@ -46,25 +46,31 @@
                     <div class="filtr-item col-sm-2"
                     data-category="1"
                     data-sort="1">
+                      <a href="{% url 'bedspace' bedspace.bed_number %}">
                         <img src="https://via.placeholder.com/300/008000?text={{ bedspace.bed_number }}" 
                         class="img-fluid mb-2" 
                         alt="{{ bedspace.bed_number }}"/>
+                      </a>
                     </div>
                   {% elif not bedspace.is_active and bedspace.is_available %}
                     <div class="filtr-item col-sm-2"
                     data-category="2"
                     data-sort="2">
+                      <a href="{% url 'bedspace' bedspace.bed_number %}">
                         <img src="https://via.placeholder.com/300/FFFFFF?text={{ bedspace.bed_number }}" 
                         class="img-fluid mb-2" 
                         alt="{{ bedspace.bed_number }}"/>
+                      </a>
                     </div>
                   {% else %}
                     <div class="filtr-item col-sm-2"
                     data-category="3"
                     data-sort="{{ bedspace.bed_number }}">
+                      <a href="{% url 'bedspace' bedspace.bed_number %}">
                         <img src="https://via.placeholder.com/300/FF0000?text={{ bedspace.bed_number }}" 
                         class="img-fluid mb-2" 
                         alt="{{ bedspace.bed_number }}"/>
+                      </a>
                     </div>
                   {% endif %}
                 {% endfor %}

@@ -1,7 +1,7 @@
-{% extends 'management/admin/admin-base.html' %}{% load static %}{% block header %}Unit{% endblock %}
+{% extends 'management/admin/admin-base.html' %}{% load static %}{% block header %}Bedspace{% endblock %}
 {% block breadcrumb %}
-	<li class="breadcrumb-item"><a href="{% url 'units' %}">View Units</a></li>
-	<li class="breadcrumb-item active">View Unit</li>
+	<li class="breadcrumb-item"><a href="{% url 'bedspaces' %}">View Bedspaces</a></li>
+	<li class="breadcrumb-item active">View Bedspace</li>
 {% endblock %}
 {% block content %}
 <section class="content">
@@ -15,19 +15,26 @@
 							<img class="profile-user-img img-fluid img-circle" src="https://via.placeholder.com/350" alt="User profile picture">
 						</div>
 
-						<h3 class="profile-username text-center">{{ unit.name }}</h3>
+						<h3 class="profile-username text-center">Bed No. {{ bedspace.bed_number }}</h3>
 
-						<p class="text-muted text-center">{{ unit.details }}</p>
 
 						<ul class="list-group list-group-unbordered mb-3">
 						<li class="list-group-item">
-							<b>Is Active</b> <a class="float-right">{{ unit.is_active }}</a>
+							<b>Status</b> <a class="float-right">
+								{% if bedspace.is_active and bedspace.is_available %}
+									Active
+								{% elif not bedspace.is_active and bedspace.is_available %}
+									Inactive
+								{% else %}
+									Unavailable
+								{% endif %}
+							</a>
 						</li>
 						<li class="list-group-item">
 							<b>Current Owner</b> 
-							{% if unit.is_active %}
-								<a href="{{ unit.current_user.id }}" class="float-right">
-									{{ unit.current_user.full_name }}
+							{% if bedspace.is_active %}
+								<a href="{% url 'user' bedspace.current_user.id %}" class="float-right">
+									{{ bedspace.current_user.full_name }}
 								</a>
 							{% else %}
 								<a class="float-right">
@@ -40,8 +47,8 @@
 							<div class="col-12">	
 							<a href="#"
 									class="btn btn-default float-right">
-									<i class="fas fa-edit"></i> Edit Unit</a>
-							{% if unit.is_active %}
+									<i class="fas fa-edit"></i> Edit Bedspace</a>
+							{% if bedspace.is_active %}
 								<a href="#"
 									class="btn btn-default float-right" style="margin-right: 1%;">
 									<i class="fas fa-edit"></i> Deactivate Current User</a>
@@ -121,7 +128,7 @@
 			<div class="col-md-9">
 				<div class="card">
 					<div class="card-header">
-						<h3 class="card-title">Past Tenants</h3>
+						<h3 class="card-title">Past Bedspacers</h3>
 					</div>
 					<!-- /.card-header -->
 					<div class="card-body" style="overflow: auto;">
@@ -135,16 +142,16 @@
 								</tr>
 							</thead>
 							<tbody>
-								{% for residence in inactive_residences %}
+								{% for bedspacing in inactive_bedspacings %}
 									<tr>
 										<th>
-											<a href="{% url 'user' residence.tenant.id %}">
-												{{ residence.tenant.username }}
+											<a href="{% url 'user' bedspacing.bedspacer.id%}">
+												{{ bedspacing.bedspacer.username }}
 											</a>
 										</th>
-										<td>{{ residence.tenant.full_name }}</td>
-										<td>{{ residence.date_joined }}</td>
-										<td>{{ residence.date_left }}</td>
+										<td>{{ bedspacing.bedspacer.full_name }}</td>
+										<td>{{ bedspacing.date_joined }}</td>
+										<td>{{ bedspacing.date_left }}</td>
 									</tr>
 								{% endfor %}
 							</tbody>

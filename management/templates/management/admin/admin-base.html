@@ -53,7 +53,7 @@
             Admin
           </span>
           
-          <a href="#" class="d-block">{{ user.username }}</a>
+          <a href="{% url 'user' request.user.id %}" class="d-block">{{ user.username }}</a>
         </div>
       </div>
 
@@ -92,14 +92,14 @@
               <li class="nav-item">
                 <a href="{% url 'units' %}" class="nav-link{% url 'units' as the_url %}
                 {% if request.get_full_path == the_url %}active{% endif %}">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="fas fa-home nav-icon"></i>
                   <p>Units</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="{% url 'bedspaces' %}" class="nav-link{% url 'bedspaces' as the_url %}
                 {% if request.get_full_path == the_url %}active{% endif %}">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="fas fa-bed nav-icon"></i>
                   <p>Bedspaces</p>
                 </a>
               </li>
@@ -107,7 +107,7 @@
                 <a href="{% url 'users' %}" class="nav-link{% url 'users' as the_url %}
                 {% url 'user' user.id as second_url %}
                 {% if request.get_full_path == the_url or request.get_full_path == second_url %}active{% endif %}">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="far fa-user nav-icon"></i>
                   <p>Tenants and Bedspacers</p>
                 </a>
               </li>
@@ -127,7 +127,7 @@
               <li class="nav-item">
                 <a href="{% url 'create-unit' %}" class="nav-link{% url 'create-unit' as the_url %}
                 {% if request.get_full_path == the_url %}active{% endif %}">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="fas fa-home nav-icon"></i>
                   <p>Add Unit
                     <!-- <span class="right badge badge-danger">New</span> -->
                   </p>
@@ -137,7 +137,7 @@
               <li class="nav-item">
                 <a href="{% url 'create-bedspace' %}" class="nav-link{% url 'create-bedspace' as the_url %}
                 {% if request.get_full_path == the_url %}active{% endif %}">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="fas fa-bed nav-icon"></i>
                   <p>Add Bedspace
                     <!-- <span class="right badge badge-danger">New</span> -->
                   </p>
@@ -147,7 +147,7 @@
               <li class="nav-item">
                 <a href="{% url 'create-user' %}" class="nav-link{% url 'create-user' as the_url %}
                 {% if request.get_full_path == the_url %}active{% endif %}">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="far fa-user nav-icon"></i>
                   <p>Create New User</p>
                 </a>
               </li>
