@@ -33,7 +33,15 @@
 							<b>Contacts</b> <a class="float-right">{{ user.contacts }}</a>
 						</li>
 						</ul>
+						<div class="row no-print">
+							<div class="col-12">	
+								<a href="#"
+										class="btn btn-default float-right">
+										<i class="fas fa-edit"></i> Edit User</a>
+							</div>
+						</div>
 					</div>
+					
               <!-- /.card-body -->
             	</div>
 				
@@ -111,6 +119,13 @@
 								{% endfor %}
 							</tbody>
 						</table>
+						<div class="row no-print">
+							<div class="col-12">	
+							<a href="#"
+									class="btn btn-default float-right">
+									<i class="fas fa-money-bill"></i> Add Account</a>
+							</div>
+						</div>
 					</div>
 					<!-- /.card-body -->
 				</div>
@@ -128,6 +143,7 @@
 									<th>Device Name</th>
 									<th>Mac Address</th>
 									<th>Date Registered</th>
+									<th>Remove</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -136,10 +152,18 @@
 										<th>{{ device.name }}</th>
 										<td>{{ device.mac_address }}</td>
 										<td>{{ device.date_added }}</td>
+										<td><a href="#">x</a></td>
 									</tr>
 								{% endfor %}
 							</tbody>
 						</table>
+						<div class="row no-print">
+							<div class="col-12">	
+							<a href="#"
+									class="btn btn-default float-right">
+									<i class="fas fa-tablet-alt"></i>  Add Device</a>
+							</div>
+						</div>
 					</div>
 					<!-- /.card-body -->
 				</div>

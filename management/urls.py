@@ -21,5 +21,11 @@ urlpatterns = [
     path('create/device', views.device_creation_view, name='create-device'),
     path('create/account', views.account_creation_view, name='create-account'),
 
+    # Deactivation
+    path('bedspaces/<int:bed_no>/deactivate',
+        views.bedspace_deactivation_view,name='bedspace-deactivation'),
+    path('units/<int:unit_id>/deactivate',
+         views.unit_deactivation_view, name='unit-deactivation'),
+
     # Edit
 ]

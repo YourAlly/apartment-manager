@@ -21,7 +21,15 @@
 
 						<ul class="list-group list-group-unbordered mb-3">
 						<li class="list-group-item">
-							<b>Is Active</b> <a class="float-right">{{ unit.is_active }}</a>
+							<b>Status</b> <a class="float-right">
+								{% if unit.is_active and unit.is_available %}
+									Active
+								{% elif not unit.is_active and unit.is_available %}
+									Inactive
+								{% else %}
+									Unavailable
+								{% endif %}
+							</a>
 						</li>
 						<li class="list-group-item">
 							<b>Current Owner</b> 
@@ -42,7 +50,7 @@
 									class="btn btn-default float-right">
 									<i class="fas fa-edit"></i> Edit Unit</a>
 							{% if unit.is_active %}
-								<a href="#"
+								<a href="{% url 'unit-deactivation' unit.id %}"
 									class="btn btn-default float-right" style="margin-right: 1%;">
 									<i class="fas fa-edit"></i> Deactivate Current User</a>
 							{% else %}
@@ -85,6 +93,15 @@
 								{% endfor %}
 							</tbody>
 						</table>
+						{% if unit.is_active %}
+							<div class="row no-print">
+								<div class="col-12">	
+								<a href="#"
+										class="btn btn-default float-right">
+										<i class="fas fa-money-bill"></i> Add Account</a>
+								</div>
+							</div>
+						{% endif %}
 					</div>
 					<!-- /.card-body -->
 				</div>
@@ -102,6 +119,7 @@
 									<th>Device Name</th>
 									<th>Mac Address</th>
 									<th>Date Registered</th>
+									<th>Remove</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -110,10 +128,20 @@
 										<th>{{ device.name }}</th>
 										<td>{{ device.mac_address }}</td>
 										<td>{{ device.date_added }}</td>
+										<td><a href="#">x</a></td>
 									</tr>
 								{% endfor %}
 							</tbody>
 						</table>
+						{% if unit.is_active %}
+							<div class="row no-print">
+								<div class="col-12">	
+								<a href="#"
+										class="btn btn-default float-right">
+										<i class="fas fa-tablet-alt"></i>  Add Device</a>
+								</div>
+							</div>
+						{% endif %}
 					</div>
 					<!-- /.card-body -->
 				</div>

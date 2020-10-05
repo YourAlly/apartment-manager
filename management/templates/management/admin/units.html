@@ -34,10 +34,12 @@
                     <ul class="ml-4 mb-0 fa-ul text-muted">
                       <li class="small"><span class="fa-li"><i class="fas fa-lg fa-building"></i></span> Cost: {{ unit.cost }}</li>
                       <li class="small"><span class="fa-li"><i class="fas fa-lg fa-phone"></i></span> Status: 
-                        {% if unit.is_active %}
+                        {% if unit.is_active and unit.is_available %}
                           Active
-                        {% else %}
+                        {% elif not unit.is_active and unit.is_available %}
                           Inactive
+                        {% else %}
+                          Unavailable
                         {% endif %}</li>
                     </ul>
                   </div>

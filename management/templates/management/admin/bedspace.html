@@ -48,11 +48,11 @@
 							<a href="#"
 									class="btn btn-default float-right">
 									<i class="fas fa-edit"></i> Edit Bedspace</a>
-							{% if bedspace.is_active %}
-								<a href="#"
+							{% if bedspace.is_active and bedspace.is_available %}
+								<a href="{% url 'bedspace-deactivation' bedspace.bed_number %}"
 									class="btn btn-default float-right" style="margin-right: 1%;">
 									<i class="fas fa-edit"></i> Deactivate Current User</a>
-							{% else %}
+							{% elif not bedspace.is_active and bedspace.is_available %}
 								<a href="#"
 									class="btn btn-default float-right" style="margin-right: 1%;">
 									<i class="fas fa-edit"></i> Register New User</a>
@@ -92,6 +92,15 @@
 								{% endfor %}
 							</tbody>
 						</table>
+						{% if bedspace.is_active %}
+							<div class="row no-print">
+								<div class="col-12">	
+								<a href="#"
+										class="btn btn-default float-right">
+										<i class="fas fa-money-bill"></i> Add Account</a>
+								</div>
+							</div>
+						{% endif %}
 					</div>
 					<!-- /.card-body -->
 				</div>
@@ -109,6 +118,7 @@
 									<th>Device Name</th>
 									<th>Mac Address</th>
 									<th>Date Registered</th>
+									<th>Remove</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -117,10 +127,20 @@
 										<th>{{ device.name }}</th>
 										<td>{{ device.mac_address }}</td>
 										<td>{{ device.date_added }}</td>
+										<td><a href="#">x</a></td>
 									</tr>
 								{% endfor %}
 							</tbody>
 						</table>
+						{% if bedspace.is_active %}
+							<div class="row no-print">
+								<div class="col-12">	
+								<a href="#"
+										class="btn btn-default float-right">
+										<i class="fas fa-tablet-alt"></i>  Add Device</a>
+								</div>
+							</div>
+						{% endif %}
 					</div>
 					<!-- /.card-body -->
 				</div>

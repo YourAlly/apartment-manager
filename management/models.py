@@ -19,9 +19,10 @@ class User(AbstractUser):
 
 
 class Unit(models.Model):
-    name = models.CharField(max_length=64)
+    name = models.CharField(max_length=64, unique=True)
     cost = models.IntegerField(default=0)
     details = models.TextField()
+    is_available = models.BooleanField(default=True)
 
     def __str__(self):
         return f'{self.name}'
@@ -70,6 +71,10 @@ class Bedspacing(models.Model):
         if self.bedspace.is_active():
             raise ValidationError('The Selected bedspace is Already Active',
                 code='invalid')
+        
+        if not self.bedspace.is_available:
+            raise ValidationError('The Selected bedspace is Currently Unavailable',
+                                  code='invalid')
 
 
 class Residence(models.Model):
@@ -89,6 +94,10 @@ class Residence(models.Model):
         if self.unit.is_active():
             raise ValidationError('The Selected Unit is Already Active',
                     code='invalid')
+        
+        if not self.unit.is_available():
+            raise ValidationError('The Selected Unit is Currently Unavailable',
+                                  code='invalid')
 
 
 class Account(models.Model):

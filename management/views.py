@@ -114,6 +114,10 @@ def units_view(request):
 
 @login_required
 def unit_view(request, unit_id):
+    if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
+        return redirect('index')
+
     try:
         unit = Unit.objects.get(pk=unit_id)
     except:
@@ -148,6 +152,10 @@ def bedspaces_view(request):
 
 @login_required
 def bedspace_view(request, bedspace_no):
+    if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
+        return redirect('index')
+
     try:
         bedspace = Bedspace.objects.get(bed_number=bedspace_no)
     except:
@@ -190,6 +198,82 @@ def user_creation_view(request):
     })
 
 
+# Deactivation Views
+@login_required
+def bedspace_deactivation_view(request, bed_no):
+    if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
+        return redirect('index')
+
+    try:
+        bedspace = Bedspace.objects.get(bed_number=bed_no)
+    except:
+        return render(request, 'management/admin/admin-404.html')
+    
+    if not bedspace.is_active() or not bedspace.is_available:
+        messages.warning(request, 'The bedspace is currently inactive or unavailable')
+        return redirect('index')
+
+    else:
+        if request.method == 'POST':
+            confirmation = forms.ConfirmationForm(request.POST)
+            if confirmation.is_valid() and confirmation.cleaned_data['confirm']:
+                bedspacing = bedspace.bedspacings.filter(is_active=True).first()
+                bedspacing.is_active = False
+                bedspacing.date_left = timezone.now()
+                bedspacing.save()
+
+                bedspacer = bedspacing.bedspacer.full_name()
+                messages.success(request, f'{bedspacer} is no longer a bedspacer of this bedspace')
+
+            return redirect('bedspace', bed_no)
+
+        else:
+            return render(request, 'management/admin/form.html',{
+                'form_title': 'Confirmation Form',
+                'form': forms.ConfirmationForm()
+
+            })
+
+
+@login_required
+def unit_deactivation_view(request, unit_id):
+    if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
+        return redirect('index')
+
+    try:
+        unit = Unit.objects.get(pk=unit_id)
+    except:
+        return render(request, 'management/admin/admin-404.html')
+
+    if not unit.is_active() or not unit.is_available:
+        messages.warning(
+            request, 'The unit is currently inactive or unavailable')
+        return redirect('index')
+
+    else:
+        if request.method == 'POST':
+            confirmation = forms.ConfirmationForm(request.POST)
+            if confirmation.is_valid() and confirmation.cleaned_data['confirm']:
+                residence = unit.residences.filter(is_active=True).first()
+                residence.is_active = False
+                residence.date_left = timezone.now()
+                residence.save()
+
+                tenant = residence.tenant.full_name()
+                messages.success(request, f'{tenant} is no longer a tenant of this unit')
+
+            return redirect('unit', unit_id)
+
+        else:
+            return render(request, 'management/admin/form.html', {
+                'form_title': 'Confirmation Form',
+                'form': forms.ConfirmationForm()
+
+            })
+
+# Form Views
 @login_required
 def unit_creation_view(request):
     if not request.user.is_superuser:

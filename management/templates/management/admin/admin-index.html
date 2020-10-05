@@ -71,7 +71,7 @@
 								{% for bedspace in active_bedspaces %}
 									<tr>
 										<th>
-											<a href="{% url 'unit' bedspace.bedspace.bed_number %}">
+											<a href="{% url 'bedspace' bedspace.bedspace.bed_number %}">
 												{{ bedspace.bedspace.bed_number }}
 											</a>
 										</th>
