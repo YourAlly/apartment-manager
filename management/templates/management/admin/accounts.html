@@ -1,0 +1,127 @@
+{% extends 'management/admin/admin-base.html' %}
+{% load static %}
+{% block header %}Accounts{% endblock %}
+{% block breadcrumb %}
+	<li class="breadcrumb-item active">View Accounts</li>
+{% endblock %}
+{% block content %}
+<section class="content">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Unsettled Accounts</h3>
+					</div>
+					<!-- /.card-header -->
+					<div class="card-body" style="overflow: auto;">
+						<table class="table table-bordered table-hover datatable">
+							<thead>
+								<tr>
+									<th>Account Name:</th>
+									<th>User:</th>
+									<th>Notes:</th>
+									<th>Amount:</th>
+									<th>Date:</th>
+									<th>Actions:</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for account in unsettled_accounts %}
+									<tr>
+										<th>{{ account.name }}</th>
+										<td>
+											<a href="{% url 'user' account.user.id %}">
+												{{ account.user.full_name }}
+											</a>
+										</td>
+										<td>{{ account.notes }}</td>
+										<td>{{ account.amount }}</td>
+										<td>{{ account.date_added|date:'d/m/Y' }}</td>
+										<td>
+											<a href="{% url 'settle-account' account.id %}">Settle</a>, 
+											<a href="{% url 'edit-account' account.id %}">Edit</a>, 
+											<a href="{% url 'delete-account' account.id %}">Delete</a>
+										</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+						
+					</div>
+					<!-- /.card-body -->
+				</div>
+				
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Settled Accounts</h3>
+					</div>
+					<!-- /.card-header -->
+					<div class="card-body" style="overflow: auto;">
+						<table class="table table-bordered table-hover datatable">
+							<thead>
+								<tr>
+									<th>Account Name:</th>
+									<th>Notes:</th>
+									<th>Amount:</th>
+									<th>Date:</th>
+									<th>Actions:</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for account in settled_accounts %}
+									<tr>
+										<th>{{ account.name }}</th>
+										<td>{{ account.notes }}</td>
+										<td>{{ account.amount }}</td>
+										<td>{{ account.date_added|date:'d/m/Y' }}</td>
+										<td> 
+											<a href="{% url 'edit-account' account.id %}">Edit</a>, 
+											<a href="{% url 'delete-account' account.id %}">Delete</a>
+										</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+						
+					</div>
+					<!-- /.card-body -->
+				</div>
+				
+			</div>
+		</div>
+	</div>
+</section>
+<!-- /.card -->
+{% endblock %}
+
+{% block scripts %}
+	<!-- DataTables -->
+	<script src="{% static 'management/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+	<script src="{% static 'management/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+	<script src="{% static 'management/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+	<script src="{% static 'management/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+
+	<script>
+		$(function () {
+			$(".datatable").DataTable({
+			"responsive": true,
+			"autoWidth": false,
+			});
+			$('.simple-datatable').DataTable({
+			"paging": true,
+			"lengthChange": false,
+			"searching": false,
+			"ordering": true,
+			"info": true,
+			"autoWidth": true,
+			"responsive": true,
+			});
+		});
+
+	</script>
+{% endblock %}

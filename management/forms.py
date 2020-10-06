@@ -16,6 +16,16 @@ class RegistrationForm(UserCreationForm):
         ]
 
 
+class UserEditForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = [
+            'first_name',
+            'last_name',
+            'contacts',
+        ]
+
+
 class BedspaceCreationForm(forms.ModelForm):
     class Meta:
         model = Bedspace

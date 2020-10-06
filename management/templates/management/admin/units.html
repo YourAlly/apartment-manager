@@ -68,12 +68,31 @@
     </div>
     <!-- /.card-body -->
     <div class="card-footer">
-      <nav aria-label="Contacts Page Navigation">
-        <ul class="pagination justify-content-center m-0">
-          <li class="page-item active"><a class="page-link" href="#">1</a></li>
-        </ul>
-      </nav>
-    </div>
+        <nav aria-label="Units Page Navigation">
+          <ul class="pagination justify-content-center m-0">
+          {% if units.has_other_pages %}
+              {% if units.has_previous %}
+                  <a class="btn btn-outline-info page-item page-link" href="?page=1">&lt;&lt;</a>
+                  <a class="btn btn-outline-info page-item page-link" href="?page={{ units.previous_page_number }}">&lt;</a>
+              {% endif %}
+
+              {% for num in units.paginator.page_range %}
+                  {% if units.number == num %}
+                      <a class="btn btn-info page-item page-link active" href="?page={{ num }}">{{ num }}</a>
+                  {% elif num > units.number|add:'-3' and num < units.number|add:'3' %}
+                      <a class="btn btn-outline-info page-item page-link" href="?page={{ num }}">{{ num }}</a>
+                  {% endif %}
+              {% endfor %}
+
+              {% if units.has_next %}
+                <a class="btn btn-outline-info page-item page-link" href="?page={{ units.next_page_number }}">&gt;</a>
+                <a class="btn btn-outline-info page-item page-link" href="?page={{ units.paginator.num_pages }}">&gt;&gt;</a>
+              {% endif %}
+
+          {% endif %}
+          </ul>
+        </nav>
+      </div>
     <!-- /.card-footer -->
   </div>
   <!-- /.card -->

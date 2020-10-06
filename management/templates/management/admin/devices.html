@@ -1,0 +1,84 @@
+{% extends 'management/admin/admin-base.html' %}
+{% load static %}
+{% block header %}Devices{% endblock %}
+{% block breadcrumb %}
+	<li class="breadcrumb-item active">View Devices</li>
+{% endblock %}
+{% block content %}
+<section class="content">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">All Devices Registered</h3>
+					</div>
+					<!-- /.card-header -->
+					<div class="card-body" style="overflow: auto;">
+						<table class="table table-bordered table-hover datatable">
+							<thead>
+								<tr>
+									<th>Device Name:</th>
+									<th>Owner</th>
+									<th>Mac Address:</th>
+									<th>Date Registered:</th>
+									<th>Remove:</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for device in all_devices %}
+									<tr>
+										<th>{{ device.name }}</th>
+										<td>
+											<a href="{% url 'user' device.owner.id%}">
+												{{ device.owner.full_name }}
+											</a>
+										</td>
+										<td>{{ device.mac_address }}</td>
+										<td>{{ device.date_added|date:'d/m/Y' }}</td>
+										<td>
+											<a href="{% url 'delete-device' device.id %}">Remove</a>, 
+											<a href="{% url 'edit-device' device.id %}">Edit</a>
+										</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+						
+					</div>
+					<!-- /.card-body -->
+				</div>
+				
+			</div>
+		</div>
+	</div>
+</section>
+<!-- /.card -->
+{% endblock %}
+
+{% block scripts %}
+	<!-- DataTables -->
+	<script src="{% static 'management/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+	<script src="{% static 'management/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+	<script src="{% static 'management/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+	<script src="{% static 'management/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+
+	<script>
+		$(function () {
+			$(".datatable").DataTable({
+			"responsive": true,
+			"autoWidth": false,
+			});
+			$('.simple-datatable').DataTable({
+			"paging": true,
+			"lengthChange": false,
+			"searching": false,
+			"ordering": true,
+			"info": true,
+			"autoWidth": true,
+			"responsive": true,
+			});
+		});
+
+	</script>
+{% endblock %}

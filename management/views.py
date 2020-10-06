@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect
 from .models import User, Residence, Account, Unit, Device, Bedspace, Bedspacing
 from django.utils import timezone
-from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+
 import management.forms as forms
 import apartment.settings
 import requests
@@ -105,7 +105,17 @@ def units_view(request):
         messages.warning(request, 'You are not allowed to access this page')
         return redirect('index')
 
-    units = Unit.objects.all()
+    all_units = Unit.objects.all()
+    page = request.GET.get('page', 1)
+    paginator = Paginator(all_units, 6)
+
+    try:
+        units = paginator.page(page)
+    except PageNotAnInteger:
+        units = paginator.page(1)
+    except EmptyPage:
+        units = paginator.page(paginator.num_pages)
+
     return render(request, 'management/admin/units.html', {
         'units': units
     })
@@ -174,6 +184,34 @@ def bedspace_view(request, bedspace_no):
     })
 
 
+@login_required
+def accounts_view(request):
+    if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
+        return redirect('index')
+
+    settled_accounts = Account.objects.filter(is_settled=True)
+    unsettled_accounts = Account.objects.filter(is_settled=False)
+
+    return render(request, 'management/admin/accounts.html', {
+        'settled_accounts': settled_accounts,
+        'unsettled_accounts': unsettled_accounts
+    })
+
+
+@login_required
+def devices_view(request):
+    if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
+        return redirect('index')
+
+    all_devices = Device.objects.all()
+
+    return render(request, 'management/admin/devices.html', {
+        'all_devices': all_devices,
+    })
+
+
 # Deactivation Views
 @login_required
 def bedspace_deactivation_view(request, bed_no):
@@ -188,7 +226,7 @@ def bedspace_deactivation_view(request, bed_no):
     
     if not bedspace.is_active() or not bedspace.is_available:
         messages.warning(request, 'The bedspace is currently inactive or unavailable')
-        return redirect('index')
+        return redirect('bedspace', bed_no)
 
     else:
         if request.method == 'POST':
@@ -226,7 +264,7 @@ def unit_deactivation_view(request, unit_id):
     if not unit.is_active() or not unit.is_available:
         messages.warning(
             request, 'The unit is currently inactive or unavailable')
-        return redirect('index')
+        return redirect('unit', unit_id)
 
     else:
         if request.method == 'POST':
@@ -241,6 +279,41 @@ def unit_deactivation_view(request, unit_id):
                 messages.success(request, f'{tenant} is no longer a tenant of this unit')
 
             return redirect('unit', unit_id)
+
+        else:
+            return render(request, 'management/admin/form.html', {
+                'form_title': 'Confirmation Form',
+                'form': forms.ConfirmationForm()
+
+            })
+
+# I consider it to be similar to deactivation
+@login_required
+def account_settlement_view(request, account_id):
+    if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
+        return redirect('index')
+
+    try:
+        account = Account.objects.get(pk=account_id)
+    except:
+        return render(request, 'management/admin/admin-404.html')
+
+    if account.is_settled:
+        messages.warning(
+            request, 'The account is already settled')
+        return redirect('accounts')
+
+    else:
+        if request.method == 'POST':
+            confirmation = forms.ConfirmationForm(request.POST)
+            if confirmation.is_valid() and confirmation.cleaned_data['confirm']:
+                account.is_settled = True
+                account.save()
+                messages.success(
+                    request, f'The account is now settled')
+
+            return redirect('accounts')
 
         else:
             return render(request, 'management/admin/form.html', {
@@ -454,3 +527,290 @@ def device_creation_view(request):
         'form_title': 'Device Creation Form',
         'form': form
     })
+
+
+
+# Edit Views
+@login_required
+def user_edit_view(request, user_id):
+    if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
+        return redirect('index')
+
+    try:
+        target = User.objects.get(pk=user_id)
+    except:
+        return render(request, 'management/admin/admin-404.html')
+
+    if request.method == 'POST':
+        form = forms.UserEditForm(request.POST, instance=target)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'User Edited!')
+            return redirect('user', user_id)
+
+    else:
+        form = forms.UserEditForm(instance=target)
+
+    return render(request, 'management/admin/form.html', {
+        'form_title': 'User Edit Form',
+        'form': form
+    })
+
+@login_required
+def unit_edit_view(request, unit_id):
+    if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
+        return redirect('index')
+
+    try:
+        target = Unit.objects.get(pk=unit_id)
+    except:
+        return render(request, 'management/admin/admin-404.html')
+
+    if request.method == 'POST':
+        form = forms.UnitCreationForm(request.POST, instance=target)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Unit Edited!')
+            return redirect('unit', unit_id)
+
+    else:
+        form = forms.UnitCreationForm(instance=target)
+
+    return render(request, 'management/admin/form.html', {
+        'form_title': 'Unit Edit Form',
+        'form': form
+    })
+
+
+@login_required
+def bedspace_edit_view(request, bed_no):
+    if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
+        return redirect('index')
+
+    try:
+        target = Bedspace.objects.get(pk=bed_no)
+    except:
+        return render(request, 'management/admin/admin-404.html')
+
+    if request.method == 'POST':
+        form = forms.BedspaceCreationForm(request.POST, instance=target)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Bedspace Edited!')
+            return redirect('bedspace', bed_no)
+
+    else:
+        form = forms.BedspaceCreationForm(instance=target)
+
+    return render(request, 'management/admin/form.html', {
+        'form_title': 'Account Edit Form',
+        'form': form
+    })
+
+
+@login_required
+def account_edit_view(request, account_id):
+    if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
+        return redirect('index')
+
+    try:
+        target = Account.objects.get(pk=account_id)
+    except:
+        return render(request, 'management/admin/admin-404.html')
+
+    if request.method == 'POST':
+        form = forms.AccountCreationForm(request.POST, instance=target)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Account Edited!')
+            return redirect('account')
+
+    else:
+        form = forms.AccountCreationForm(instance=target)
+
+    return render(request, 'management/admin/form.html', {
+        'form_title': 'Account Edit Form',
+        'form': form
+    })
+
+
+@login_required
+def device_edit_view(request, device_id):
+    if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
+        return redirect('index')
+
+    try:
+        target = Device.objects.get(pk=device_id)
+    except:
+        return render(request, 'management/admin/admin-404.html')
+
+    if request.method == 'POST':
+        form = forms.DeviceCreationForm(request.POST, instance=target)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Device Edited!')
+            return redirect('devices')
+
+    else:
+        form = forms.DeviceCreationForm(instance=target)
+
+    return render(request, 'management/admin/form.html', {
+        'form_title': 'Device Edit Form',
+        'form': form
+    })
+
+
+# Delete Views
+@login_required
+def user_deletion_view(request, user_id):
+    if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
+        return redirect('index')
+
+    try:
+        user = User.objects.get(pk=user_id)
+    except:
+        return render(request, 'management/admin/admin-404.html')
+
+    else:
+        if request.method == 'POST':
+            confirmation = forms.ConfirmationForm(request.POST)
+            if confirmation.is_valid() and confirmation.cleaned_data['confirm']:
+                user.delete()
+                messages.success(
+                    request, f'The User is now deleted')
+
+            return redirect('users')
+
+        else:
+            messages.warning(request, f'User { user.username } will be deleted')
+            return render(request, 'management/admin/form.html', {
+                'form_title': 'Confirmation Form',
+                'form': forms.ConfirmationForm()
+
+            })
+
+
+@login_required
+def unit_deletion_view(request, unit_id):
+    if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
+        return redirect('index')
+
+    try:
+        unit = Unit.objects.get(pk=unit_id)
+    except:
+        return render(request, 'management/admin/admin-404.html')
+
+    else:
+        if request.method == 'POST':
+            confirmation = forms.ConfirmationForm(request.POST)
+            if confirmation.is_valid() and confirmation.cleaned_data['confirm']:
+                unit.delete()
+                messages.success(
+                    request, f'The User is now deleted')
+
+            return redirect('users')
+
+        else:
+            messages.warning(request, f'Unit { unit.name } will be deleted')
+            return render(request, 'management/admin/form.html', {
+                'form_title': 'Confirmation Form',
+                'form': forms.ConfirmationForm()
+
+            })
+
+
+@login_required
+def bedspace_deletion_view(request, bed_no):
+    if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
+        return redirect('index')
+
+    try:
+        bedspace = Bedspace.objects.get(pk=bed_no)
+    except:
+        return render(request, 'management/admin/admin-404.html')
+
+    else:
+        if request.method == 'POST':
+            confirmation = forms.ConfirmationForm(request.POST)
+            if confirmation.is_valid() and confirmation.cleaned_data['confirm']:
+                bedspace.delete()
+                messages.success(
+                    request, f'The User is now deleted')
+
+            return redirect('users')
+
+        else:
+            messages.warning(request, f'Bed number { bedspace.bed_number } will be deleted')
+            return render(request, 'management/admin/form.html', {
+                'form_title': 'Confirmation Form',
+                'form': forms.ConfirmationForm()
+
+            })
+
+
+@login_required
+def account_deletion_view(request, account_id):
+    if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
+        return redirect('index')
+
+    try:
+        account = Account.objects.get(pk=account_id)
+    except:
+        return render(request, 'management/admin/admin-404.html')
+
+    else:
+        if request.method == 'POST':
+            confirmation = forms.ConfirmationForm(request.POST)
+            if confirmation.is_valid() and confirmation.cleaned_data['confirm']:
+                account.delete()
+                messages.success(
+                    request, f'The User is now deleted')
+
+            return redirect('users')
+
+        else:
+            messages.warning(request, f'{ account.name } will be deleted')
+            return render(request, 'management/admin/form.html', {
+                'form_title': 'Confirmation Form',
+                'form': forms.ConfirmationForm()
+
+            })
+
+
+@login_required
+def device_deletion_view(request, device_id):
+    if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
+        return redirect('index')
+
+    try:
+        device = Device.objects.get(pk=device_id)
+    except:
+        return render(request, 'management/admin/admin-404.html')
+
+    else:
+        if request.method == 'POST':
+            confirmation = forms.ConfirmationForm(request.POST)
+            if confirmation.is_valid() and confirmation.cleaned_data['confirm']:
+                device.delete()
+                messages.success(
+                    request, f'The Device is now deleted')
+
+            return redirect('devices')
+
+        else:
+            messages.warning(request, f'{ device.name } will be deleted')
+            return render(request, 'management/admin/form.html', {
+                'form_title': 'Confirmation Form',
+                'form': forms.ConfirmationForm()
+
+            })

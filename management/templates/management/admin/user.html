@@ -35,7 +35,7 @@
 						</ul>
 						<div class="row no-print">
 							<div class="col-12">	
-								<a href="#"
+								<a href="{% url 'edit-user' user.id %}"
 										class="btn btn-default float-right">
 										<i class="fas fa-edit"></i> Edit User</a>
 							</div>
@@ -116,7 +116,11 @@
 										<td>{{ account.notes }}</td>
 										<td>{{ account.amount }}</td>
 										<td>{{ account.date_added|date:'d/m/Y' }}</td>
-										<td><a href="#">Settle</a></td>
+										<td>
+											<a href="{% url 'settle-account' account.id %}">Settle</a>, 
+											<a href="{% url 'edit-account' account.id %}">Edit</a>, 
+											<a href="{% url 'delete-account' account.id %}">Delete</a>
+										</td>
 									</tr>
 								{% endfor %}
 							</tbody>
@@ -145,7 +149,7 @@
 									<th>Device Name:</th>
 									<th>Mac Address:</th>
 									<th>Date Registered:</th>
-									<th>Remove:</th>
+									<th>Actions:</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -154,7 +158,10 @@
 										<th>{{ device.name }}</th>
 										<td>{{ device.mac_address }}</td>
 										<td>{{ device.date_added|date:'d/m/Y' }}</td>
-										<td><a href="#">x</a></td>
+										<td>
+											<a href="{% url 'delete-device' device.id %}">Remove</a>, 
+											<a href="{% url 'edit-device' device.id %}">Edit</a>
+										</td>
 									</tr>
 								{% endfor %}
 							</tbody>

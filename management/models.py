@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 # Create your models here.
 class User(AbstractUser):
     contacts = models.CharField(max_length=64, blank=True, null=True)
+    
     def is_tenant(self):
         return bool(self.residences.filter(is_active=True))
 

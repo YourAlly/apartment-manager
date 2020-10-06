@@ -45,11 +45,11 @@
 						</ul>
 						<div class="row no-print">
 							<div class="col-12">	
-							<a href="#"
+							<a href="{% url 'edit-bedspace' bedspace.bed_no %}"
 									class="btn btn-default float-right">
 									<i class="fas fa-edit"></i> Edit Bedspace</a>
 							{% if bedspace.is_active and bedspace.is_available %}
-								<a href="{% url 'bedspace-deactivation' bedspace.bed_number %}"
+								<a href="{% url 'deactivate-bedspace' bedspace.bed_number %}"
 									class="btn btn-default float-right" style="margin-right: 1%;">
 									<i class="fas fa-edit"></i> Deactivate Current User</a>
 							{% elif not bedspace.is_active and bedspace.is_available %}
@@ -79,6 +79,7 @@
 									<th>Notes:</th>
 									<th>Amount:</th>
 									<th>Date:</th>
+									<th>Actions:</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -88,6 +89,11 @@
 										<td>{{ account.notes }}</td>
 										<td>{{ account.amount }}</td>
 										<td>{{ account.date_added|date:'d/m/Y' }}</td>
+										<td>
+											<a href="{% url 'settle-account' account.id %}">Settle</a>, 
+											<a href="{% url 'edit-account' account.id %}">Edit</a>, 
+											<a href="{% url 'delete-account' account.id %}">Delete</a>
+										</td>
 									</tr>
 								{% endfor %}
 							</tbody>
@@ -127,7 +133,10 @@
 										<th>{{ device.name }}</th>
 										<td>{{ device.mac_address }}</td>
 										<td>{{ device.date_added|date:'d/m/Y' }}</td>
-										<td><a href="#">x</a></td>
+										<td>
+											<a href="{% url 'delete-device' device.id %}">Remove</a>, 
+											<a href="{% url 'edit-device' device.id %}">Edit</a>
+										</td>
 									</tr>
 								{% endfor %}
 							</tbody>
