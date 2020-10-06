@@ -4,10 +4,12 @@ from django.utils import timezone
 from apartment.settings import AUTH_USER_MODEL
 from django.core.exceptions import ValidationError
 
+from PIL import Image
+
 # Create your models here.
 class User(AbstractUser):
     contacts = models.CharField(max_length=64, blank=True, null=True)
-    
+
     def is_tenant(self):
         return bool(self.residences.filter(is_active=True))
 
@@ -22,8 +24,9 @@ class User(AbstractUser):
 class Unit(models.Model):
     name = models.CharField(max_length=64, unique=True)
     cost = models.IntegerField(default=0)
-    details = models.TextField()
+    details = models.TextField(blank=True)
     is_available = models.BooleanField(default=True)
+    image = models.ImageField(default='default.jpg', upload_to='unit_images')
 
     def __str__(self):
         return f'{self.name}'
@@ -36,6 +39,16 @@ class Unit(models.Model):
             return None
         
         return self.residences.filter(is_active=True).first().tenant
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        img = Image.open(self.image.path)
+
+        if img.height > 300 or img.width > 300:
+            output_size = (300, 300)
+            img.thumbnail(output_size)
+            img.save(self.image.path)
     
 
 class Bedspace(models.Model):

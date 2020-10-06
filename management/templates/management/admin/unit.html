@@ -12,7 +12,7 @@
 				<div class="card card-primary card-outline">
 					<div class="card-body box-profile">
 						<div class="text-center">
-							<img class="profile-user-img img-fluid img-circle" src="https://via.placeholder.com/350" alt="User profile picture">
+							<img class="profile-user-img img-fluid img-circle" src="{{ unit.image.url }}" alt="Unit picture">
 						</div>
 
 						<h3 class="profile-username text-center">{{ unit.name }}</h3>
@@ -49,14 +49,17 @@
 							<a href="{% url 'edit-unit' unit.id %}"
 									class="btn btn-default float-right">
 									<i class="fas fa-edit"></i> Edit Unit</a>
+							<a href="{% url 'edit-unit-image' unit.id %}"
+									class="btn btn-default float-right" style="margin-right: 1%;">
+									<i class="fas fa-edit"></i> Edit Image</a>
 							{% if unit.is_active %}
 								<a href="{% url 'deactivate-unit' unit.id %}"
 									class="btn btn-default float-right" style="margin-right: 1%;">
-									<i class="fas fa-edit"></i> Deactivate Current User</a>
+									<i class="fas fa-times"></i> Deactivate Current User</a>
 							{% else %}
 								<a href="{% url 'create-residence' %}?unit_id={{unit.id}}"
 									class="btn btn-default float-right" style="margin-right: 1%;">
-									<i class="fas fa-edit"></i> Register New User</a>
+									<i class="fas fa-user"></i> Register New User</a>
 							{% endif %}
 							
 							</div>

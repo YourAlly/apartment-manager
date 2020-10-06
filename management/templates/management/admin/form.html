@@ -15,7 +15,12 @@
 					<!-- /.card-header -->
 					<!-- form start -->
 					<div style="padding: 3%;">
-						<form role="form" method="POST">
+						<form role="form" method="POST" 
+							{% comment %} A lazy implementation, I know, but it works {% endcomment %}
+							{% if multipart %}
+								enctype="multipart/form-data"
+							{% endif %}
+						>
 							{% csrf_token %}{{ form|crispy }}
 							<!-- /.card-body -->
 							<div class="card-footer">

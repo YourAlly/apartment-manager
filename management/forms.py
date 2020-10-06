@@ -44,6 +44,11 @@ class UnitCreationForm(forms.ModelForm):
         fields = ['name', 'cost', 'details']
 
 
+class UnitImageForm(forms.ModelForm):
+    class Meta:
+        model = Unit
+        fields = ['image']
+
 class ResidenceCreationForm(forms.ModelForm):
     class Meta:
         model = Residence

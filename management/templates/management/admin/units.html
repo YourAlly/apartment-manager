@@ -44,7 +44,7 @@
                     </ul>
                   </div>
                   <div class="col-5 text-center">
-                    <img src="https://via.placeholder.com/350" alt="Unit Image" class="img-circle img-fluid">
+                    <img src="{{ unit.image.url }}" alt="Unit Image" class="img-circle img-fluid">
                   </div>
                 </div>
               </div>
@@ -92,7 +92,15 @@
           {% endif %}
           </ul>
         </nav>
+        <div class="row no-print">
+        <div class="col-12">	
+        <a href="{% url 'create-unit' %}"
+            class="btn btn-default float-right">
+            <i class="fas fa-plus"></i> Add Unit</a>
+        </div>
       </div>
+      </div>
+      
     <!-- /.card-footer -->
   </div>
   <!-- /.card -->

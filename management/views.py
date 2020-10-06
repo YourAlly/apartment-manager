@@ -558,6 +558,33 @@ def user_edit_view(request, user_id):
     })
 
 @login_required
+def unit_edit_image_view(request, unit_id):
+    if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
+        return redirect('index')
+
+    try:
+        target = Unit.objects.get(pk=unit_id)
+    except:
+        return render(request, 'management/admin/admin-404.html')
+
+    if request.method == 'POST':
+        form = forms.UnitImageForm(request.POST, request.FILES ,instance=target)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Unit Edited!')
+            return redirect('unit', unit_id)
+
+    else:
+        form = forms.UnitImageForm(instance=target)
+
+    return render(request, 'management/admin/form.html', {
+        'form_title': 'Unit Edit Form',
+        'multipart': True,
+        'form': form
+    })
+
+@login_required
 def unit_edit_view(request, unit_id):
     if not request.user.is_superuser:
         messages.warning(request, 'You are not allowed to access this page')
@@ -582,7 +609,6 @@ def unit_edit_view(request, unit_id):
         'form_title': 'Unit Edit Form',
         'form': form
     })
-
 
 @login_required
 def bedspace_edit_view(request, bed_no):

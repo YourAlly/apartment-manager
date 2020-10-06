@@ -1,5 +1,8 @@
 from django.urls import path
 from . import views
+from django.conf.urls.static import static
+
+import apartment.settings as settings
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -34,6 +37,7 @@ urlpatterns = [
     # Edit
     path('users/<int:user_id>/edit', views.user_edit_view, name='edit-user'),
     path('units/<int:unit_id>/edit', views.unit_edit_view, name='edit-unit'),
+    path('units/<int:unit_id>/edit/image', views.unit_edit_image_view, name='edit-unit-image'),
     path('bedspaces/<int:bedspace_no>/edit', views.bedspace_edit_view, name='edit-bedspace'),
     path('accounts/<int:account_id>/edit', views.account_edit_view, name='edit-account'),
     path('devices/<int:device_id>/edit', views.device_edit_view, name='edit-device'),
@@ -48,3 +52,7 @@ urlpatterns = [
     path('devices/<int:device_id>/delete',
          views.device_deletion_view, name='delete-device'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)
