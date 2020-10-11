@@ -23,7 +23,23 @@ def index(request):
             'active_bedspaces': active_bedspaces,
         })
     else:
-        return render(request, 'management/user-index.html')
+        unsettled_accounts = request.user.accounts.filter(is_settled=False)
+        devices = request.user.devices.all()
+
+        active_residences = request.user.residences.filter(is_active=True)
+        active_bedspacings = request.user.bedpacings.filter(is_active=True)
+
+        inactive_residences = request.user.residences.filter(is_active=False)
+        inactive_bedspacings = request.user.bedpacings.filter(is_active=False)
+        
+        return render(request, 'management/user-index.html',{
+            'active_units': active_units,
+            'active_residences': active_residences,
+            'active_bedspaces': active_bedspaces,
+            'active_bedspacings': active_bedspacings,
+            'unsettled_accounts': unsettled_accounts,
+            'devices': devices
+        })
 
 
 def login_view(request):

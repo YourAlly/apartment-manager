@@ -1,0 +1,124 @@
+{% extends 'management/user-base.html' %}{% load crispy_forms_tags %}{%load static %}{% block header %}Home{% endblock %}
+{% block content %}
+<div class="content">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Unsettled Accounts</h3>
+					</div>
+					<!-- /.card-header -->
+					<div class="card-body" style="overflow: auto;">
+						<table class="table table-bordered table-hover datatable">
+							<thead>
+								<tr>
+									<th>Unit Name:</th>
+									<th>Tenant Username:</th>
+									<th>Tenant Name:</th>
+									<th>Tenant Contacts:</th>
+									<th>Date Registered:</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for unit in active_units %}
+									<tr>
+										<th>
+											<a href="{% url 'unit' unit.unit.id %}">
+												{{ unit.unit.name }}
+											</a>
+										</th>
+										<td>
+											<a href="{% url 'user' unit.tenant.id %}">
+												{{ unit.tenant.username }}
+											</a>
+										</td>
+										<td>{{ unit.tenant.full_name }}</td>
+										<td>{{ unit.tenant.contacts }}</td>
+										<td>{{ unit.date_joined|date:'d/m/Y' }}</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+						
+					</div>
+					<!-- /.card-body -->
+				</div>
+				
+			</div>
+			
+		</div>
+	<!-- /.row -->
+	<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Active Bedspaces</h3>
+					</div>
+					<!-- /.card-header -->
+					<div class="card-body" style="overflow: auto;">
+						<table class="table table-bordered table-hover datatable">
+							<thead>
+								<tr>
+									<th>Bed No.:</th>
+									<th>Bedspacer Username:</th>
+									<th>Bedspacer Name:</th>
+									<th>Bedspacer Contacts:</th>
+									<th>Date Registered:</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for bedspace in active_bedspaces %}
+									<tr>
+										<th>
+											<a href="{% url 'bedspace' bedspace.bedspace.bed_number %}">
+												{{ bedspace.bedspace.bed_number }}
+											</a>
+										</th>
+										<td><a href="{% url 'user' bedspace.bedspacer.id %}">{{ bedspace.bedspacer.username }}</a></td>
+										<td>{{ bedspace.bedspacer.full_name }}</td>
+										<td>{{ bedspace.bedspacer.contacts }}</td>
+										<td>{{ bedspace.bedspacer.date_joined|date:'d/m/Y' }}</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+						
+					</div>
+					<!-- /.card-body -->
+				</div>
+				
+			</div>
+			
+		</div>
+	<!-- /.row -->
+	</div>
+	<!-- /.container-fluid -->
+</div>
+{% endblock %}
+{% block scripts %}
+	<!-- DataTables -->
+	<script src="{% static 'management/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+	<script src="{% static 'management/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+	<script src="{% static 'management/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+	<script src="{% static 'management/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+
+	<script>
+		$(function () {
+			$(".datatable").DataTable({
+			"responsive": true,
+			"autoWidth": false,
+			});
+			$('.simple-datatable').DataTable({
+			"paging": true,
+			"lengthChange": false,
+			"searching": false,
+			"ordering": true,
+			"info": true,
+			"autoWidth": true,
+			"responsive": true,
+			});
+		});
+
+	</script>
+{% endblock %}
