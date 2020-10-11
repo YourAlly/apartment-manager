@@ -13,7 +13,7 @@
 
         <!-- I think the unit cards goes here -->
         {% for unit in units %}
-          <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch">
+          <div class="col-12 col-sm-6 col-md-4 align-items-stretch">
             <div class="card bg-light">
               <div class="card-header text-muted border-bottom-0">
                 Unit
@@ -44,7 +44,11 @@
                     </ul>
                   </div>
                   <div class="col-5 text-center">
-                    <img src="{{ unit.image.url }}" alt="Unit Image" class="img-circle img-fluid">
+                    {% if unit.images.first %}
+                      <img src="{{ unit.images.first.image.url }}" alt="Unit Image" class="img-circle img-fluid">
+                    {% else %}
+                      <img src="https://via.placeholder.com/300/FFFFFF?text=No Images" alt="Unit Image" class="img-circle img-fluid">
+                    {% endif %}
                   </div>
                 </div>
               </div>

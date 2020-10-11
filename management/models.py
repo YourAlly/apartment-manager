@@ -26,7 +26,6 @@ class Unit(models.Model):
     cost = models.IntegerField(default=0)
     details = models.TextField(blank=True)
     is_available = models.BooleanField(default=True)
-    image = models.ImageField(default='default.jpg', upload_to='unit_images')
 
     def __str__(self):
         return f'{self.name}'
@@ -39,16 +38,6 @@ class Unit(models.Model):
             return None
         
         return self.residences.filter(is_active=True).first().tenant
-    
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-
-        img = Image.open(self.image.path)
-
-        if img.height > 300 or img.width > 300:
-            output_size = (300, 300)
-            img.thumbnail(output_size)
-            img.save(self.image.path)
     
 
 class Bedspace(models.Model):
@@ -130,3 +119,8 @@ class Device(models.Model):
     owner = models.ForeignKey(
         AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="devices")
     date_added = models.DateTimeField(default=timezone.now)
+
+
+class Unit_Image(models.Model):
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name="images")
+    image = models.ImageField(default='default.jpg', upload_to='unit_images')

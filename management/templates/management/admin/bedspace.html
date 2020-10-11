@@ -17,30 +17,47 @@
 
 
 						<ul class="list-group list-group-unbordered mb-3">
-						<li class="list-group-item">
-							<b>Status</b> <a class="float-right">
-								{% if bedspace.is_active and bedspace.is_available %}
-									Active
-								{% elif not bedspace.is_active and bedspace.is_available %}
-									Inactive
-								{% else %}
-									Unavailable
-								{% endif %}
-							</a>
-						</li>
-						<li class="list-group-item">
-							<b>Current Owner</b> 
-							{% if bedspace.is_active %}
-								<a href="{% url 'user' bedspace.current_user.id %}" class="float-right">
-									{{ bedspace.current_user.full_name }}
+							<li class="list-group-item">
+								<b>Status</b> <a class="float-right">
+									{% if bedspace.is_active and bedspace.is_available %}
+										Active
+									{% elif not bedspace.is_active and bedspace.is_available %}
+										Inactive
+									{% else %}
+										Unavailable
+									{% endif %}
 								</a>
-							{% else %}
-								<a class="float-right">
-									None
-								</a>
-							{% endif %}
-						</li>
+							</li>
 						</ul>
+						{% if bedspace.is_active %}
+							<ul class="list-group list-group-unbordered mb-3">
+								<p class="text-muted text-center">Current Owner</p>
+								<li class="list-group-item">
+									<b>Full Name</b> 
+									{% if bedspace.is_active %}
+										<a href="{% url 'user' bedspace.current_user.id %}" class="float-right">
+											{{ bedspace.current_user.full_name }}
+										</a>
+									{% else %}
+										<a class="float-right">
+											None
+										</a>
+									{% endif %}
+								</li>
+								<li class="list-group-item">
+									<b>Username</b> 
+									{% if bedspace.is_active %}
+										<a href="{% url 'user' bedspace.current_user.id %}" class="float-right">
+											{{ bedspace.current_user.username }}
+										</a>
+									{% else %}
+										<a class="float-right">
+											None
+										</a>
+									{% endif %}
+								</li>
+							</ul>
+						{% endif %}
 						<div class="row no-print">
 							<div class="col-12">	
 							<a href="{% url 'edit-bedspace' bedspace.bed_number %}"
@@ -142,7 +159,7 @@
 						{% if bedspace.is_active %}
 							<div class="row no-print">
 								<div class="col-12">	
-								<a href="#"
+								<a href="{% url 'create-device' %}?user_id={{ bedspace.current_user.id }}"
 										class="btn btn-default float-right">
 										<i class="fas fa-tablet-alt"></i>  Add Device</a>
 								</div>
@@ -187,6 +204,7 @@
 					<!-- /.card-body -->
 				</div>
 			</div>
+			
 			<!-- /.col -->
 		</div>
 		<!-- /.col -->

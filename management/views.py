@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import User, Residence, Account, Unit, Device, Bedspace, Bedspacing
+from .models import User, Residence, Account, Unit, Device, Bedspace, Bedspacing, Unit_Image
 from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -381,9 +381,9 @@ def residence_creation_view(request):
         form = forms.ResidenceCreationForm(request.POST)
 
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Residence Created!')
-            return redirect('index')
+            residence = form.save()
+            messages.success(request, f'{ residence.tenant.full_name() } Registered!')
+            return redirect('unit', residence.unit.id)
 
     else:
         unit_id = request.GET.get('unit_id')
@@ -438,9 +438,9 @@ def bedspacing_creation_view(request):
         form = forms.BedspacingCreationForm(request.POST)
 
         if form.is_valid():
-            form.save()
+            bedspacing = form.save()
             messages.success(request, 'Bedspacing Created!')
-            return redirect('index')
+            return redirect('bedspace', bedspacing.bedspace.id)
 
     else:
         bed_no = request.GET.get('bed_no')
@@ -518,7 +518,7 @@ def device_creation_view(request):
                 messages.warning(request, 'User not found')
                 form = forms.DeviceCreationForm()
             else:
-                form = forms.DeviceCreationForm(initial={'user': user})
+                form = forms.DeviceCreationForm(initial={'owner': user})
 
         else:
             form = forms.DeviceCreationForm()
@@ -528,6 +528,38 @@ def device_creation_view(request):
         'form': form
     })
 
+
+@login_required
+def unit_image_creation_view(request):
+    if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
+        return redirect('index')
+
+    if request.method == 'POST':
+        form = forms.UnitImageCreationForm(request.POST, request.FILES)
+        if form.is_valid():
+            image = form.save()
+            messages.success(request, 'Image Uploaded!')
+            return redirect('unit', image.unit.id)
+
+    else:
+        unit_id = request.GET.get('unit_id')
+        if unit_id:
+            try:
+                unit = Unit.objects.get(pk=unit_id)
+            except:
+                messages.warning(request, 'Unit not found')
+                form = forms.UnitImageCreationForm()
+            else:
+                form = forms.UnitImageCreationForm(initial={'unit': unit})
+        else:
+            form = forms.UnitImageCreationForm()
+
+    return render(request, 'management/admin/form.html', {
+        'form_title': 'Unit Image Upload Form',
+        'multipart': True,
+        'form': form
+    })
 
 
 # Edit Views
@@ -557,32 +589,6 @@ def user_edit_view(request, user_id):
         'form': form
     })
 
-@login_required
-def unit_edit_image_view(request, unit_id):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
-
-    try:
-        target = Unit.objects.get(pk=unit_id)
-    except:
-        return render(request, 'management/admin/admin-404.html')
-
-    if request.method == 'POST':
-        form = forms.UnitImageForm(request.POST, request.FILES ,instance=target)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Unit Edited!')
-            return redirect('unit', unit_id)
-
-    else:
-        form = forms.UnitImageForm(instance=target)
-
-    return render(request, 'management/admin/form.html', {
-        'form_title': 'Unit Edit Form',
-        'multipart': True,
-        'form': form
-    })
 
 @login_required
 def unit_edit_view(request, unit_id):
@@ -609,6 +615,7 @@ def unit_edit_view(request, unit_id):
         'form_title': 'Unit Edit Form',
         'form': form
     })
+
 
 @login_required
 def bedspace_edit_view(request, bed_no):
@@ -784,14 +791,14 @@ def bedspace_deletion_view(request, bed_no):
 
 @login_required
 def account_deletion_view(request, account_id):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
-
     try:
         account = Account.objects.get(pk=account_id)
     except:
         return render(request, 'management/admin/admin-404.html')
+
+    if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
+        return redirect('index')
 
     else:
         if request.method == 'POST':
@@ -801,7 +808,7 @@ def account_deletion_view(request, account_id):
                 messages.success(
                     request, f'The User is now deleted')
 
-            return redirect('users')
+            return redirect('user', account.user.id)
 
         else:
             messages.warning(request, f'{ account.name } will be deleted')
@@ -831,10 +838,40 @@ def device_deletion_view(request, device_id):
                 messages.success(
                     request, f'The Device is now deleted')
 
-            return redirect('devices')
+            return redirect('user', device.owner.id)
 
         else:
             messages.warning(request, f'{ device.name } will be deleted')
+            return render(request, 'management/admin/form.html', {
+                'form_title': 'Confirmation Form',
+                'form': forms.ConfirmationForm()
+
+            })
+
+
+@login_required
+def unit_image_deletion_view(request, unit_image_id):
+    if not request.user.is_superuser:
+        messages.warning(request, 'You are not allowed to access this page')
+        return redirect('index')
+
+    try:
+        unit_image = Unit_Image.objects.get(pk=unit_image_id)
+    except:
+        return render(request, 'management/admin/admin-404.html')
+
+    else:
+        if request.method == 'POST':
+            confirmation = forms.ConfirmationForm(request.POST)
+            if confirmation.is_valid() and confirmation.cleaned_data['confirm']:
+                unit_image.delete()
+                messages.success(
+                    request, f'The unit_image is now deleted')
+
+            return redirect('unit', unit_image.unit.id)
+
+        else:
+            messages.warning(request, f'Unit_Image_{ unit_image.id } will be deleted')
             return render(request, 'management/admin/form.html', {
                 'form_title': 'Confirmation Form',
                 'form': forms.ConfirmationForm()

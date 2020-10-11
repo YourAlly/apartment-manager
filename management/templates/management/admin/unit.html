@@ -12,7 +12,11 @@
 				<div class="card card-primary card-outline">
 					<div class="card-body box-profile">
 						<div class="text-center">
-							<img class="profile-user-img img-fluid img-circle" src="{{ unit.image.url }}" alt="Unit picture">
+							{% if unit.images.first %}
+								<img src="{{ unit.images.first.image.url }}" alt="Unit Image" class="profile-user-img img-fluid img-circle">
+							{% else %}
+								<img src="https://via.placeholder.com/300/FFFFFF?text=No Images" alt="Unit Image" class="profile-user-img img-fluid img-circle">
+							{% endif %}
 						</div>
 
 						<h3 class="profile-username text-center">{{ unit.name }}</h3>
@@ -20,38 +24,55 @@
 						<p class="text-muted text-center">{{ unit.details }}</p>
 
 						<ul class="list-group list-group-unbordered mb-3">
-						<li class="list-group-item">
-							<b>Status</b> <a class="float-right">
-								{% if unit.is_active and unit.is_available %}
-									Active
-								{% elif not unit.is_active and unit.is_available %}
-									Inactive
-								{% else %}
-									Unavailable
-								{% endif %}
-							</a>
-						</li>
-						<li class="list-group-item">
-							<b>Current Owner</b> 
-							{% if unit.is_active %}
-								<a href="{{ unit.current_user.id }}" class="float-right">
-									{{ unit.current_user.full_name }}
+							<li class="list-group-item">
+								<b>Status</b> <a class="float-right">
+									{% if unit.is_active and unit.is_available %}
+										Active
+									{% elif not unit.is_active and unit.is_available %}
+										Inactive
+									{% else %}
+										Unavailable
+									{% endif %}
 								</a>
-							{% else %}
-								<a class="float-right">
-									None
-								</a>
-							{% endif %}
-						</li>
+							</li>
 						</ul>
+						{% if unit.is_active %}
+							<ul class="list-group list-group-unbordered mb-3">
+								<p class="text-muted text-center">Current Owner</p>
+								<li class="list-group-item">
+									<b>Full Name</b> 
+									{% if unit.is_active %}
+										<a href="{% url 'user' unit.current_user.id %}" class="float-right">
+											{{ unit.current_user.full_name }}
+										</a>
+									{% else %}
+										<a class="float-right">
+											None
+										</a>
+									{% endif %}
+								</li>
+								<li class="list-group-item">
+									<b>Username</b> 
+									{% if unit.is_active %}
+										<a href="{% url 'user' unit.current_user.id %}" class="float-right">
+											{{ unit.current_user.username }}
+										</a>
+									{% else %}
+										<a class="float-right">
+											None
+										</a>
+									{% endif %}
+								</li>
+							</ul>
+						{% endif %}
 						<div class="row no-print">
 							<div class="col-12">	
 							<a href="{% url 'edit-unit' unit.id %}"
 									class="btn btn-default float-right">
 									<i class="fas fa-edit"></i> Edit Unit</a>
-							<a href="{% url 'edit-unit-image' unit.id %}"
+							<a href="{% url 'create-unit-image' %}?unit_id={{ unit.id }}"
 									class="btn btn-default float-right" style="margin-right: 1%;">
-									<i class="fas fa-edit"></i> Edit Image</a>
+									<i class="fas fa-plus"></i> Add Image</a>
 							{% if unit.is_active %}
 								<a href="{% url 'deactivate-unit' unit.id %}"
 									class="btn btn-default float-right" style="margin-right: 1%;">
@@ -148,7 +169,7 @@
 						{% if unit.is_active %}
 							<div class="row no-print">
 								<div class="col-12">	
-								<a href="#"
+								<a href="{% url 'create-device' %}?user_id={{ unit.current_user.id }}"
 										class="btn btn-default float-right">
 										<i class="fas fa-tablet-alt"></i>  Add Device</a>
 								</div>
@@ -193,6 +214,39 @@
 					<!-- /.card-body -->
 				</div>
 			</div>
+			<div class="col-md-9">
+				<div class="card">
+					<div class="card-header">
+						<div class="card-title">
+							Unit Images
+						</div>
+					</div>
+					<div class="card-body">
+						<div class="row">
+							{% for unit_image in unit.images.all %}
+								<div class="col-sm-2">
+									<a href="{{ unit_image.image.url }}"
+									 data-toggle="lightbox"
+									 data-title="<a href='{% url 'delete-unit-image' unit_image.id %}'>Delete Image</a>"
+									 data-gallery="gallery"
+									>
+										<img src="{{ unit_image.image.url }}" class="img-fluid mb-2" alt="black sample">
+									</a>
+								</div>
+							{% empty %}
+								No Images
+							{% endfor %}
+						</div>
+						<div class="row no-print">
+							<div class="col-12">	
+							<a href="{% url 'create-unit-image' %}?unit_id={{ unit.id }}"
+									class="btn btn-default float-right">
+									<i class="fas fa-plus"></i> Add Image</a>
+							</div>
+						</div>
+					</div>
+				</div>
+          	</div>
 			<!-- /.col -->
 		</div>
 		<!-- /.col -->
@@ -224,6 +278,20 @@
 			"responsive": true,
 			});
 		});
+	</script>
+	
+	<!-- Ekko Lightbox -->
+	<script src="{% static 'management/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
+	<script src="{% static 'management/plugins/ekko-lightbox/ekko-lightbox.min.js' %}"></script>
 
+	<script>
+		$(function () {
+			$(document).on('click', '[data-toggle="lightbox"]', function(event) {
+				event.preventDefault();
+				$(this).ekkoLightbox({
+					alwaysShowClose: true
+				});
+			});
+		});
 	</script>
 {% endblock %}

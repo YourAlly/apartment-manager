@@ -22,6 +22,8 @@ urlpatterns = [
     path('create/bedspace', views.bedspace_creation_view, name='create-bedspace'),
     path('create/bedspacing', views.bedspacing_creation_view, name='create-bedspacing'),
     path('create/unit', views.unit_creation_view, name='create-unit'),
+    path('create/unit-image',
+         views.unit_image_creation_view, name='create-unit-image'),
     path('create/residence', views.residence_creation_view, name='create-residence'),
     path('create/device', views.device_creation_view, name='create-device'),
     path('create/account', views.account_creation_view, name='create-account'),
@@ -37,7 +39,6 @@ urlpatterns = [
     # Edit
     path('users/<int:user_id>/edit', views.user_edit_view, name='edit-user'),
     path('units/<int:unit_id>/edit', views.unit_edit_view, name='edit-unit'),
-    path('units/<int:unit_id>/edit/image', views.unit_edit_image_view, name='edit-unit-image'),
     path('bedspaces/<int:bedspace_no>/edit', views.bedspace_edit_view, name='edit-bedspace'),
     path('accounts/<int:account_id>/edit', views.account_edit_view, name='edit-account'),
     path('devices/<int:device_id>/edit', views.device_edit_view, name='edit-device'),
@@ -51,6 +52,8 @@ urlpatterns = [
          views.account_deletion_view, name='delete-account'),
     path('devices/<int:device_id>/delete',
          views.device_deletion_view, name='delete-device'),
+    path('unit-images/<int:unit_image_id>/delete',
+         views.unit_image_deletion_view, name='delete-unit-image'),
 ]
 
 if settings.DEBUG:
