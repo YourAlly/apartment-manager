@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect
-from .models import User, Residence, Account, Unit, Device, Bedspace, Bedspacing, Unit_Image
 from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -7,6 +6,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import login, logout, authenticate
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
+from .models import User, Residence, Account, Unit, Device, Bedspace, Bedspacing, Unit_Image
 import management.forms as forms
 import apartment.settings
 import requests
