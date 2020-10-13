@@ -24,19 +24,38 @@ def index(request):
             'active_bedspaces': active_bedspaces,
         })
     else:
-        unsettled_accounts = request.user.accounts.filter(is_settled=False)
-        devices = request.user.devices.all()
+        try:
+            unsettled_accounts = request.user.accounts.filter(is_settled=False)
+        except:
+            unsettled_accounts = None
 
-        active_residences = request.user.residences.filter(is_active=True)
-        active_bedspacings = request.user.bedpacings.filter(is_active=True)
+        try:
+            devices = request.user.devices.all()
+        except:
+            devices = None
+            
+        try:
+            active_residences = request.user.residences.filter(is_active=True)
+        except:
+            active_residences = None
 
-        inactive_residences = request.user.residences.filter(is_active=False)
-        inactive_bedspacings = request.user.bedpacings.filter(is_active=False)
+        try:
+            active_bedspacings = request.user.bedpacings.filter(is_active=True)
+        except:
+            active_bedspacings = None
+
+        try:
+            inactive_residences = request.user.residences.filter(is_active=False)
+        except:
+            inactive_residences = None
+        
+        try:
+            inactive_bedspacings = request.user.bedpacings.filter(is_active=False)
+        except:
+            inactive_bedspacings = None
         
         return render(request, 'management/user-index.html', {
-            'active_units': active_units,
             'active_residences': active_residences,
-            'active_bedspaces': active_bedspaces,
             'active_bedspacings': active_bedspacings,
             'unsettled_accounts': unsettled_accounts,
             'devices': devices
@@ -223,7 +242,7 @@ def bedspace_deactivation_view(request, bed_no):
         if request.method == 'POST':
             confirmation = forms.ConfirmationForm(request.POST)
             if confirmation.is_valid() and confirmation.cleaned_data['confirm']:
-                bedspacing = bedspace.bedspacings.filter(is_active=True).first()
+                bedspacing = bedspace.bedspacings.get(is_active=True)
                 bedspacing.is_active = False
                 bedspacing.date_left = timezone.now()
                 bedspacing.save()
@@ -258,7 +277,7 @@ def unit_deactivation_view(request, unit_id):
         if request.method == 'POST':
             confirmation = forms.ConfirmationForm(request.POST)
             if confirmation.is_valid() and confirmation.cleaned_data['confirm']:
-                residence = unit.residences.filter(is_active=True).first()
+                residence = unit.residences.get(is_active=True)
                 residence.is_active = False
                 residence.date_left = timezone.now()
                 residence.save()

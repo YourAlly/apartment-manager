@@ -55,7 +55,7 @@ class Bedspace(models.Model):
             return None
         
         return self.bedspacings.filter(is_active=True).first().bedspacer
-    
+
 
 class Bedspacing(models.Model):
     bedspace = models.ForeignKey(Bedspace, on_delete=models.CASCADE,
