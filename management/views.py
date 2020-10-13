@@ -3,6 +3,7 @@ from .models import User, Residence, Account, Unit, Device, Bedspace, Bedspacing
 from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import login, logout, authenticate
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
@@ -32,7 +33,7 @@ def index(request):
         inactive_residences = request.user.residences.filter(is_active=False)
         inactive_bedspacings = request.user.bedpacings.filter(is_active=False)
         
-        return render(request, 'management/user-index.html',{
+        return render(request, 'management/user-index.html', {
             'active_units': active_units,
             'active_residences': active_residences,
             'active_bedspaces': active_bedspaces,
@@ -50,14 +51,15 @@ def login_view(request):
 
         recaptcha_response = request.POST.get('g-recaptcha-response')
 
-        data = {
-            'secret': apartment.settings.GOOGLE_RECAPTCHA_SECRET_KEY,
-            'response': recaptcha_response
-        }
         r = requests.post(
-            'https://www.google.com/recaptcha/api/siteverify', data=data)
+            'https://www.google.com/recaptcha/api/siteverify', data={
+                'secret': apartment.settings.GOOGLE_RECAPTCHA_SECRET_KEY,
+                'response': recaptcha_response
+            }
+        )
+        
         result = r.json()
-        ''' End reCAPTCHA validation '''
+        # End reCAPTCHA validation
 
         if result['success']:
             user = authenticate(request, username=username, password=password)
@@ -83,11 +85,8 @@ def logout_view(request):
 
 
 @login_required
+@staff_member_required
 def users_view(request):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
-
     users = User.objects.exclude(is_superuser=True).exclude(is_staff=True)
     return render(request, 'management/admin/tenants_and_bedspacers.html', {
         'users': users
@@ -95,11 +94,8 @@ def users_view(request):
 
 
 @login_required
+@staff_member_required
 def user_view(request, user_id):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
-
     user = User.objects.get(pk=user_id)
     active_residences = user.residences.filter(is_active=True)
     active_bedspacings = user.bedspacings.filter(is_active=True)
@@ -116,11 +112,8 @@ def user_view(request, user_id):
 
 
 @login_required
+@staff_member_required
 def units_view(request):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
-
     all_units = Unit.objects.all()
     page = request.GET.get('page', 1)
     paginator = Paginator(all_units, 6)
@@ -138,11 +131,8 @@ def units_view(request):
 
 
 @login_required
+@staff_member_required
 def unit_view(request, unit_id):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
-
     try:
         unit = Unit.objects.get(pk=unit_id)
     except:
@@ -163,11 +153,8 @@ def unit_view(request, unit_id):
 
 
 @login_required
+@staff_member_required
 def bedspaces_view(request):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
-
     bedspaces = Bedspace.objects.all().order_by('bed_number')
 
     return render(request, 'management/admin/bedspaces.html', {
@@ -176,11 +163,8 @@ def bedspaces_view(request):
 
 
 @login_required
+@staff_member_required
 def bedspace_view(request, bedspace_no):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
-
     try:
         bedspace = Bedspace.objects.get(bed_number=bedspace_no)
     except:
@@ -201,11 +185,8 @@ def bedspace_view(request, bedspace_no):
 
 
 @login_required
+@staff_member_required
 def accounts_view(request):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
-
     settled_accounts = Account.objects.filter(is_settled=True)
     unsettled_accounts = Account.objects.filter(is_settled=False)
 
@@ -216,11 +197,8 @@ def accounts_view(request):
 
 
 @login_required
+@staff_member_required
 def devices_view(request):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
-
     all_devices = Device.objects.all()
 
     return render(request, 'management/admin/devices.html', {
@@ -230,11 +208,8 @@ def devices_view(request):
 
 # Deactivation Views
 @login_required
+@staff_member_required
 def bedspace_deactivation_view(request, bed_no):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
-
     try:
         bedspace = Bedspace.objects.get(bed_number=bed_no)
     except:
@@ -267,11 +242,8 @@ def bedspace_deactivation_view(request, bed_no):
 
 
 @login_required
+@staff_member_required
 def unit_deactivation_view(request, unit_id):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
-
     try:
         unit = Unit.objects.get(pk=unit_id)
     except:
@@ -305,11 +277,8 @@ def unit_deactivation_view(request, unit_id):
 
 # I consider it to be similar to deactivation
 @login_required
+@staff_member_required
 def account_settlement_view(request, account_id):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
-
     try:
         account = Account.objects.get(pk=account_id)
     except:
@@ -341,11 +310,8 @@ def account_settlement_view(request, account_id):
 
 # Form Views
 @login_required
+@staff_member_required
 def user_creation_view(request):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
-
     if request.method == 'POST':
         form = forms.RegistrationForm(request.POST)
 
@@ -364,11 +330,8 @@ def user_creation_view(request):
 
 
 @login_required
+@staff_member_required
 def unit_creation_view(request):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
-
     if request.method == 'POST':
         form = forms.UnitCreationForm(request.POST)
 
@@ -387,12 +350,8 @@ def unit_creation_view(request):
 
 
 @login_required
+@staff_member_required
 def residence_creation_view(request):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
-
-
     if request.method == 'POST':
         form = forms.ResidenceCreationForm(request.POST)
 
@@ -421,12 +380,8 @@ def residence_creation_view(request):
 
 
 @login_required
+@staff_member_required
 def bedspace_creation_view(request):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
-        
-
     if request.method == 'POST':
         form = forms.BedspaceCreationForm(request.POST)
 
@@ -445,11 +400,8 @@ def bedspace_creation_view(request):
 
 
 @login_required
+@staff_member_required
 def bedspacing_creation_view(request):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
-
     if request.method == 'POST':
         form = forms.BedspacingCreationForm(request.POST)
 
@@ -479,11 +431,8 @@ def bedspacing_creation_view(request):
 
 
 @login_required
+@staff_member_required
 def account_creation_view(request):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
-
     if request.method == 'POST':
         form = forms.AccountCreationForm(request.POST)
 
@@ -513,11 +462,8 @@ def account_creation_view(request):
 
 
 @login_required
+@staff_member_required
 def device_creation_view(request):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
-
     if request.method == 'POST':
         form = forms.DeviceCreationForm(request.POST)
         if form.is_valid():
@@ -546,11 +492,8 @@ def device_creation_view(request):
 
 
 @login_required
+@staff_member_required
 def unit_image_creation_view(request):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
-
     if request.method == 'POST':
         form = forms.UnitImageCreationForm(request.POST, request.FILES)
         if form.is_valid():
@@ -580,11 +523,8 @@ def unit_image_creation_view(request):
 
 # Edit Views
 @login_required
+@staff_member_required
 def user_edit_view(request, user_id):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
-
     try:
         target = User.objects.get(pk=user_id)
     except:
@@ -607,11 +547,8 @@ def user_edit_view(request, user_id):
 
 
 @login_required
+@staff_member_required
 def unit_edit_view(request, unit_id):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
-
     try:
         target = Unit.objects.get(pk=unit_id)
     except:
@@ -634,11 +571,8 @@ def unit_edit_view(request, unit_id):
 
 
 @login_required
+@staff_member_required
 def bedspace_edit_view(request, bed_no):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
-
     try:
         target = Bedspace.objects.get(pk=bed_no)
     except:
@@ -661,11 +595,8 @@ def bedspace_edit_view(request, bed_no):
 
 
 @login_required
+@staff_member_required
 def account_edit_view(request, account_id):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
-
     try:
         target = Account.objects.get(pk=account_id)
     except:
@@ -688,11 +619,8 @@ def account_edit_view(request, account_id):
 
 
 @login_required
+@staff_member_required
 def device_edit_view(request, device_id):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
-
     try:
         target = Device.objects.get(pk=device_id)
     except:
@@ -716,11 +644,8 @@ def device_edit_view(request, device_id):
 
 # Delete Views
 @login_required
+@staff_member_required
 def user_deletion_view(request, user_id):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
-
     try:
         user = User.objects.get(pk=user_id)
     except:
@@ -746,11 +671,8 @@ def user_deletion_view(request, user_id):
 
 
 @login_required
+@staff_member_required
 def unit_deletion_view(request, unit_id):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
-
     try:
         unit = Unit.objects.get(pk=unit_id)
     except:
@@ -776,11 +698,8 @@ def unit_deletion_view(request, unit_id):
 
 
 @login_required
+@staff_member_required
 def bedspace_deletion_view(request, bed_no):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
-
     try:
         bedspace = Bedspace.objects.get(pk=bed_no)
     except:
@@ -806,15 +725,12 @@ def bedspace_deletion_view(request, bed_no):
 
 
 @login_required
+@staff_member_required
 def account_deletion_view(request, account_id):
     try:
         account = Account.objects.get(pk=account_id)
     except:
         return render(request, 'management/admin/admin-404.html')
-
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
 
     else:
         if request.method == 'POST':
@@ -836,11 +752,8 @@ def account_deletion_view(request, account_id):
 
 
 @login_required
+@staff_member_required
 def device_deletion_view(request, device_id):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
-
     try:
         device = Device.objects.get(pk=device_id)
     except:
@@ -866,11 +779,8 @@ def device_deletion_view(request, device_id):
 
 
 @login_required
+@staff_member_required
 def unit_image_deletion_view(request, unit_image_id):
-    if not request.user.is_superuser:
-        messages.warning(request, 'You are not allowed to access this page')
-        return redirect('index')
-
     try:
         unit_image = Unit_Image.objects.get(pk=unit_image_id)
     except:
