@@ -10,33 +10,23 @@
 					</div>
 					<!-- /.card-header -->
 					<div class="card-body" style="overflow: auto;">
-						<table class="table table-bordered table-hover datatable">
+						<table class="table table-bordered table-hover simple-datatable">
 							<thead>
 								<tr>
-									<th>Unit Name:</th>
-									<th>Tenant Username:</th>
-									<th>Tenant Name:</th>
-									<th>Tenant Contacts:</th>
-									<th>Date Registered:</th>
+									<th>Account Name:</th>
+									<th>Notes:</th>
+									<th>Amount:</th>
+									<th>Date:</th>
 								</tr>
 							</thead>
 							<tbody>
-								{% for unit in active_units %}
-									<tr>
-										<th>
-											<a href="{% url 'unit' unit.unit.id %}">
-												{{ unit.unit.name }}
-											</a>
-										</th>
-										<td>
-											<a href="{% url 'user' unit.tenant.id %}">
-												{{ unit.tenant.username }}
-											</a>
-										</td>
-										<td>{{ unit.tenant.full_name }}</td>
-										<td>{{ unit.tenant.contacts }}</td>
-										<td>{{ unit.date_joined|date:'d/m/Y' }}</td>
-									</tr>
+								{% for Account in unsettled_accounts %}
+								<tr>
+									<th>{{ account.name }}</th>
+									<td>{{ account.notes }}</td>
+									<td>{{ account.amount }}</td>
+									<td>{{ account.date_added|date:'d/m/Y' }}</td>
+								</tr>
 								{% endfor %}
 							</tbody>
 						</table>
@@ -44,41 +34,26 @@
 					</div>
 					<!-- /.card-body -->
 				</div>
-				
-			</div>
-			
-		</div>
-	<!-- /.row -->
-	<div class="row">
-			<div class="col-12">
 				<div class="card">
 					<div class="card-header">
-						<h3 class="card-title">Active Bedspaces</h3>
+						<h3 class="card-title">Registered Devices</h3>
 					</div>
 					<!-- /.card-header -->
 					<div class="card-body" style="overflow: auto;">
-						<table class="table table-bordered table-hover datatable">
+						<table class="table table-bordered table-hover simple-datatable">
 							<thead>
 								<tr>
-									<th>Bed No.:</th>
-									<th>Bedspacer Username:</th>
-									<th>Bedspacer Name:</th>
-									<th>Bedspacer Contacts:</th>
+									<th>Device Name:</th>
+									<th>Mac Address:</th>
 									<th>Date Registered:</th>
 								</tr>
 							</thead>
 							<tbody>
-								{% for bedspace in active_bedspaces %}
+								{% for device in registered_devices %}
 									<tr>
-										<th>
-											<a href="{% url 'bedspace' bedspace.bedspace.bed_number %}">
-												{{ bedspace.bedspace.bed_number }}
-											</a>
-										</th>
-										<td><a href="{% url 'user' bedspace.bedspacer.id %}">{{ bedspace.bedspacer.username }}</a></td>
-										<td>{{ bedspace.bedspacer.full_name }}</td>
-										<td>{{ bedspace.bedspacer.contacts }}</td>
-										<td>{{ bedspace.bedspacer.date_joined|date:'d/m/Y' }}</td>
+										<th>{{ device.name }}</th>
+										<td>{{ device.mac_address }}</td>
+										<td>{{ device.date_added|date:'d/m/Y' }}</td>
 									</tr>
 								{% endfor %}
 							</tbody>
@@ -87,9 +62,105 @@
 					</div>
 					<!-- /.card-body -->
 				</div>
-				
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Currently Owned Units</h3>
+					</div>
+					<!-- /.card-header -->
+					<div class="card-body" style="overflow: auto;">
+						<table class="table table-bordered table-hover simple-datatable">
+							<thead>
+								<tr>
+									<th>Unit Name:</th>
+									<th>Date Registered:</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for residence in active_residences %}
+									<tr>
+										<th>
+											{{ residence.unit.name }}
+										</th>
+										<td>{{ residence.date_joined|date:'d/m/Y' }}</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+						
+					</div>
+					<!-- /.card-body -->
+				</div>
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Currently Owned Bedspaces</h3>
+					</div>
+					<!-- /.card-header -->
+					<div class="card-body" style="overflow: auto;">
+						<table class="table table-bordered table-hover simple-datatable">
+							<thead>
+								<tr>
+									<th>Bed Number:</th>
+									<th>Date Registered:</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for bedspacing in active_bedspacings%}
+									<tr>
+										<th>
+											{{ bedspacing.bedspace.bed_number }}
+										</th>
+										<td>{{ bedspacing.date_joined|date:'d/m/Y' }}</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+						
+					</div>
+					<!-- /.card-body -->
+				</div>
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Ownership History</h3>
+					</div>
+					<!-- /.card-header -->
+					<div class="card-body" style="overflow: auto;">
+						<table class="table table-bordered table-hover simple-datatable">
+							<thead>
+								<tr>
+									<th>Bedspace or Unit:</th>
+									<th>Bed Number or Unit Name:</th>
+									<th>Date Registered:</th>
+									<th>Date Left:</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for residence in inactive_residences %}
+									<tr>
+										<th>Unit</th>
+										<td>{{ residence.unit.name }}</td>
+										<td>{{ residence.date_joined|date:'d/m/Y' }}</td>
+										<td>{{ residence.date_left|date:'d/m/Y' }}</td>
+									</tr>
+								{% endfor %}
+								{% for bedspacing in unsettled_accounts %}
+									<tr>
+										<th>
+											Bedspace
+										</th>
+										<th>
+											{{ bedspacing.bedspace.bed_number }}
+										</th>
+										<td>{{ bedspacing.date_joined|date:'d/m/Y' }}</td>
+										<td>{{ bedspacing.date_left|date:'d/m/Y' }}</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+						
+					</div>
+					<!-- /.card-body -->
+				</div>
 			</div>
-			
 		</div>
 	<!-- /.row -->
 	</div>

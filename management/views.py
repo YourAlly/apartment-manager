@@ -30,9 +30,9 @@ def index(request):
             unsettled_accounts = None
 
         try:
-            devices = request.user.devices.all()
+            registered_devices = request.user.devices.all()
         except:
-            devices = None
+            registered_devices = None
             
         try:
             active_residences = request.user.residences.filter(is_active=True)
@@ -58,7 +58,7 @@ def index(request):
             'active_residences': active_residences,
             'active_bedspacings': active_bedspacings,
             'unsettled_accounts': unsettled_accounts,
-            'devices': devices
+            'devices': registered_devices
         })
 
 
