@@ -1,0 +1,212 @@
+{% extends 'management/user-base.html' %}{% load static %}{% block header %}Unit{% endblock %}
+{% block breadcrumb %}
+	<li class="breadcrumb-item"><a href="{% url 'units' %}">View Units</a></li>
+	<li class="breadcrumb-item active">View Unit</li>
+{% endblock %}
+{% block content %}
+<section class="content">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-9">
+				<!-- Profile Card -->
+				<div class="card card-primary card-outline">
+					<div class="card-body box-profile">
+						<div class="text-center">
+							{% if unit.images.first %}
+								<img src="{{ unit.images.first.image.url }}" alt="Unit Image" class="profile-user-img img-fluid img-circle">
+							{% else %}
+								<img src="https://via.placeholder.com/300/FFFFFF?text=No Images" alt="Unit Image" class="profile-user-img img-fluid img-circle">
+							{% endif %}
+						</div>
+
+						<h3 class="profile-username text-center">{{ unit.name }}</h3>
+
+						<p class="text-muted text-center">{{ unit.details }}</p>
+
+						<ul class="list-group list-group-unbordered mb-3">
+							<li class="list-group-item">
+								<b>Status</b> <a class="float-right">
+									{% if unit.is_active and unit.is_available %}
+										Active
+									{% elif not unit.is_active and unit.is_available %}
+										Inactive
+									{% else %}
+										Unavailable
+									{% endif %}
+								</a>
+							</li>
+						</ul>
+					</div>
+              <!-- /.card-body -->
+            	</div>
+				<!-- /.card -->
+			</div>
+			<div class="col-md-9">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Unsettled Accounts</h3>
+					</div>
+					<!-- /.card-header -->
+					<div class="card-body" style="overflow: auto;">
+						<table class="table table-bordered table-hover datatable">
+							<thead>
+								<tr>
+									<th>Account Name:</th>
+									<th>Notes:</th>
+									<th>Amount:</th>
+									<th>Date:</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for account in unsettled_accounts %}
+									<tr>
+										<th>{{ account.name }}</th>
+										<td>{{ account.notes }}</td>
+										<td>{{ account.amount }}</td>
+										<td>{{ account.date_added|date:'d/m/Y' }}</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+					<!-- /.card-body -->
+				</div>
+			</div>
+			<div class="col-md-9">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Current Owner's Registered Devices</h3>
+					</div>
+					<!-- /.card-header -->
+					<div class="card-body" style="overflow: auto;">
+						<table class="table table-bordered table-hover simple-datatable">
+							<thead>
+								<tr>
+									<th>Device Name:</th>
+									<th>Mac Address:</th>
+									<th>Date Registered:</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for device in unit.current_user.devices.all %}
+									<tr>
+										<th>{{ device.name }}</th>
+										<td>{{ device.mac_address }}</td>
+										<td>{{ device.date_added|date:'d/m/Y' }}</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+					<!-- /.card-body -->
+				</div>
+			</div>
+			<div class="col-md-9">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Past Tenants</h3>
+					</div>
+					<!-- /.card-header -->
+					<div class="card-body" style="overflow: auto;">
+						<table class="table table-bordered table-hover datatable">
+							<thead>
+								<tr>
+									<th>Username:</th>
+									<th>Full name:</th>
+									<th>Date Activated:</th>
+									<th>Date Deactivated:</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for residence in inactive_residences %}
+									<tr>
+										<th>
+											<a href="{% url 'user' residence.tenant.id %}">
+												{{ residence.tenant.username }}
+											</a>
+										</th>
+										<td>{{ residence.tenant.full_name }}</td>
+										<td>{{ residence.date_joined|date:'d/m/Y' }}</td>
+										<td>{{ residence.date_left|date:'d/m/Y' }}</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+					<!-- /.card-body -->
+				</div>
+			</div>
+			<div class="col-md-9">
+				<div class="card">
+					<div class="card-header">
+						<div class="card-title">
+							Unit Images
+						</div>
+					</div>
+					<div class="card-body">
+						<div class="row">
+							{% for unit_image in unit.images.all %}
+								<div class="col-sm-2">
+									<a href="{{ unit_image.image.url }}"
+									 data-toggle="lightbox"
+									 data-title="{{ unit_image.unit.name }}"
+									 data-gallery="gallery"
+									>
+										<img src="{{ unit_image.image.url }}" class="img-fluid mb-2" alt="black sample">
+									</a>
+								</div>
+							{% empty %}
+								No Images
+							{% endfor %}
+						</div>
+					</div>
+				</div>
+          	</div>
+			<!-- /.col -->
+		</div>
+		<!-- /.col -->
+	</div>
+	<!-- /.row -->
+	<!-- /.container-fluid -->
+</section>
+{% endblock %}
+{% block scripts %}
+	<!-- DataTables -->
+	<script src="{% static 'management/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+	<script src="{% static 'management/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+	<script src="{% static 'management/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+	<script src="{% static 'management/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+
+	<script>
+		$(function () {
+			$(".datatable").DataTable({
+			"responsive": true,
+			"autoWidth": false,
+			});
+			$('.simple-datatable').DataTable({
+			"paging": true,
+			"lengthChange": false,
+			"searching": false,
+			"ordering": true,
+			"info": true,
+			"autoWidth": true,
+			"responsive": true,
+			});
+		});
+	</script>
+	
+	<!-- Ekko Lightbox -->
+	<script src="{% static 'management/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
+	<script src="{% static 'management/plugins/ekko-lightbox/ekko-lightbox.min.js' %}"></script>
+
+	<script>
+		$(function () {
+			$(document).on('click', '[data-toggle="lightbox"]', function(event) {
+				event.preventDefault();
+				$(this).ekkoLightbox({
+					alwaysShowClose: true
+				});
+			});
+		});
+	</script>
+{% endblock %}

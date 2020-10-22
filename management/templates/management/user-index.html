@@ -79,7 +79,9 @@
 								{% for residence in active_residences %}
 									<tr>
 										<th>
-											{{ residence.unit.name }}
+											<a href="{% url 'unit' residence.unit.id %}">
+												{{ residence.unit.name }}
+											</a>
 										</th>
 										<td>{{ residence.date_joined|date:'d/m/Y' }}</td>
 									</tr>

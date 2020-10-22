@@ -150,13 +150,14 @@ def units_view(request):
 
 
 @login_required
-@staff_member_required
 def unit_view(request, unit_id):
     try:
         unit = Unit.objects.get(pk=unit_id)
     except:
         return render(request, 'management/admin/admin-404.html')
 
+    is_authorized = bool(request.user.is_superuser or request.user.is_staff)
+    
     if unit.is_active():
         unsettled_accounts = unit.current_user().accounts.filter(is_settled=False)
     else:
@@ -164,11 +165,23 @@ def unit_view(request, unit_id):
 
     inactive_residences = unit.residences.filter(is_active=False)
 
-    return render(request, 'management/admin/unit.html', {
-        'unit': unit,
-        'inactive_residences': inactive_residences,
-        'unsettled_accounts': unsettled_accounts or None
-    })
+    if not is_authorized and (request.user != unit.current_user()):
+        messages.warning(request, 'You are not authorized to access this page')
+        return redirect('index')
+
+    elif not is_authorized and (request.user == unit.current_user()):
+        return render(request, 'management/user-unit.html', {
+            'unit': unit,
+            'inactive_residences': inactive_residences,
+            'unsettled_accounts': unsettled_accounts or None
+        })
+
+    else:
+        return render(request, 'management/admin/unit.html', {
+            'unit': unit,
+            'inactive_residences': inactive_residences,
+            'unsettled_accounts': unsettled_accounts or None
+        })
 
 
 @login_required
