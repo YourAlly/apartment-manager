@@ -90,11 +90,11 @@
                   <i class="right fas fa-angle-left"></i>
                 </p>
               </a>
-              
               <ul class="nav nav-treeview">
+
                 <li class="nav-item">
-                  <a href="{% url 'password-reset' %}" class="nav-link{% url 'password-reset' as the_url %}
-                    {% if request.get_full_path == the_url %}active{% endif %}">
+                  <a href="{% url 'reset-password' %}" class="nav-link{% url 'reset-password' as the_url %}
+                  {% if request.get_full_path == the_url %}active{% endif %}">
                     <i class="far fa-circle nav-icon"></i>
                     <p>Reset Password</p>
                   </a>
@@ -112,7 +112,6 @@
           </ul>
         </nav>
         <!-- /.sidebar-menu -->
-        <div class="os-scrollbar os-scrollbar-horizontal os-scrollbar-unusable os-scrollbar-auto-hidden"><div class="os-scrollbar-track"><div class="os-scrollbar-handle" style="width: 100%; transform: translate(0px);"></div></div></div><div class="os-scrollbar os-scrollbar-vertical os-scrollbar-auto-hidden"><div class="os-scrollbar-track"><div class="os-scrollbar-handle" style="height: 31.3243%; transform: translate(0px, 269px);"></div></div></div><div class="os-scrollbar-corner"></div></div>
       </div>
       <!-- /.sidebar -->
     </aside>
@@ -187,6 +186,9 @@
 
   <!-- AdminLTE App -->
   <script src="{% static 'management/dist/js/adminlte.min.js' %}"></script>
+  
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
 
   <!-- Page Specific Scripts -->
   {% block scripts %}
