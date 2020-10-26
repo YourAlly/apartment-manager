@@ -69,3 +69,9 @@ class DeviceCreationForm(forms.ModelForm):
 
 class ConfirmationForm(forms.Form):
     confirm = forms.BooleanField(required=False, label='Are you sure about this action?')
+
+
+class PasswordResetForm(forms.Form):
+    old_password = forms.CharField(widget=forms.PasswordInput)
+    new_password = forms.CharField(widget=forms.PasswordInput)
+    confirmation = forms.CharField(widget=forms.PasswordInput)

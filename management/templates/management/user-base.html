@@ -93,11 +93,20 @@
               
               <ul class="nav nav-treeview">
                 <li class="nav-item">
+                  <a href="{% url 'password-reset' %}" class="nav-link{% url 'password-reset' as the_url %}
+                    {% if request.get_full_path == the_url %}active{% endif %}">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Reset Password</p>
+                  </a>
+                </li>
+
+                <li class="nav-item">
                   <a href="{% url 'logout' %}" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
                     <p>Logout</p>
                   </a>
                 </li>
+
               </ul>
             </li>
           </ul>

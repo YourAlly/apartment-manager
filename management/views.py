@@ -104,6 +104,43 @@ def logout_view(request):
 
 
 @login_required
+def password_reset_view(request):
+    if request.method == 'POST':
+        form = forms.PasswordResetForm(request.POST)
+        if form.is_valid():
+            new_password = form.cleaned_data['new_password']
+            confirmation = form.cleaned_data['confirmation']
+            password = form.cleaned_data['old_password']
+            user = authenticate(
+                request, username=request.user.username, password=password)
+
+            # Check if authentication successful
+            if user is not None:
+                if new_password == confirmation:
+                    messages.success(
+                        request, "Password Reset Done!")
+                    request.user.set_password(new_password)
+                    request.user.save()
+                    logout(request)
+                    return redirect('login')
+                else:
+                    messages.error(request, "Confirmation values doesn't match")
+            else:
+                messages.error(request, "Old Password doesn't match")
+    else:
+        form = forms.PasswordResetForm()
+    
+    if request.user.is_staff:
+        return render(request, 'management/admin/form.html', {
+            'form': form
+        })
+
+    else:
+        return render(request, 'management/user-form.html', {
+            'form': form
+        })
+
+@login_required
 @staff_member_required
 def users_view(request):
     users = User.objects.exclude(is_superuser=True).exclude(is_staff=True)

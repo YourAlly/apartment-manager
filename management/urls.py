@@ -27,6 +27,7 @@ urlpatterns = [
     path('create/residence', views.residence_creation_view, name='create-residence'),
     path('create/device', views.device_creation_view, name='create-device'),
     path('create/account', views.account_creation_view, name='create-account'),
+    path('reset-password', views.password_reset_view, name='password-reset'),
 
     # Deactivation
     path('units/<int:unit_id>/deactivate',

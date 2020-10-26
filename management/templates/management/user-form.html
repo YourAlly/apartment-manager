@@ -1,0 +1,36 @@
+{% extends 'management/user-base.html' %}{% load crispy_forms_tags %} {% block header %}{{ form_title }}{% endblock %}
+{% block breadcrumb %}
+<li class="breadcrumb-item active">{{ form_title }}</li>
+{% endblock %} {% block content %}
+<section class="content">
+	<div class="container-fluid">
+		<div class="row">
+			<!-- left column -->
+			<div class="col-md-6">
+				<!-- general form elements -->
+				<div class="card card-primary">
+					<div class="card-header">
+						<h3 class="card-title">Form</h3>
+					</div>
+					<!-- /.card-header -->
+					<!-- form start -->
+					<div style="padding: 3%;">
+						<form role="form" method="POST" 
+							{% comment %} A lazy implementation, I know, but it works {% endcomment %}
+							{% if multipart %}
+								enctype="multipart/form-data"
+							{% endif %}
+						>
+							{% csrf_token %}{{ form|crispy }}
+							<!-- /.card-body -->
+							<div class="card-footer">
+								<button type="submit" class="btn btn-primary" style="float: right;">Submit</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+{% endblock %}
