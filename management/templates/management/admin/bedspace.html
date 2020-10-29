@@ -59,19 +59,22 @@
 							</ul>
 						{% endif %}
 						<div class="row no-print">
-							<div class="col-12">	
-							<a href="{% url 'edit-bedspace' bedspace.bed_number %}"
+							<div class="col-12">
+								<a href="{% url 'delete-bedspace' bedspace.bed_number %}"
 									class="btn btn-default float-right">
-									<i class="fas fa-edit"></i> Edit Bedspace</a>
-							{% if bedspace.is_active and bedspace.is_available %}
-								<a href="{% url 'deactivate-bedspace' bedspace.bed_number %}"
-									class="btn btn-default float-right" style="margin-right: 1%;">
-									<i class="fas fa-times"></i> Deactivate Current User</a>
-							{% elif not bedspace.is_active and bedspace.is_available %}
-								<a href="{% url 'create-bedspacing' %}?bed_no={{bedspace.bed_number}}"
-									class="btn btn-default float-right" style="margin-right: 1%;">
-									<i class="fas fa-user"></i> Register New User</a>
-							{% endif %}
+									<i class="fas fa-trash"></i> Delete Bedspace</a>
+								<a href="{% url 'edit-bedspace' bedspace.bed_number %}"
+										class="btn btn-default float-right">
+										<i class="fas fa-edit"></i> Edit Bedspace</a>
+								{% if bedspace.is_active and bedspace.is_available %}
+									<a href="{% url 'deactivate-bedspace' bedspace.bed_number %}"
+										class="btn btn-default float-right" style="margin-right: 1%;">
+										<i class="fas fa-times"></i> Deactivate Current User</a>
+								{% elif not bedspace.is_active and bedspace.is_available %}
+									<a href="{% url 'create-bedspacing' %}?bed_no={{bedspace.bed_number}}"
+										class="btn btn-default float-right" style="margin-right: 1%;">
+										<i class="fas fa-user"></i> Register New User</a>
+								{% endif %}
 							
 							</div>
 						</div>

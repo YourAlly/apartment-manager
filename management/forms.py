@@ -29,7 +29,7 @@ class UserEditForm(forms.ModelForm):
 class BedspaceCreationForm(forms.ModelForm):
     class Meta:
         model = Bedspace
-        fields = ['bed_number']
+        fields = ['bed_number', 'is_available']
 
 
 class BedspacingCreationForm(forms.ModelForm):
@@ -41,7 +41,7 @@ class BedspacingCreationForm(forms.ModelForm):
 class UnitCreationForm(forms.ModelForm):
     class Meta:
         model = Unit
-        fields = ['name', 'cost', 'details']
+        fields = ['name', 'cost', 'details', 'is_available']
 
 
 class UnitImageCreationForm(forms.ModelForm):

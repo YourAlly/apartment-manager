@@ -64,7 +64,6 @@ def index(request):
 
 def login_view(request):
     if request.method == "POST":
-        # Attempt to sign user in
         username = request.POST.get("username")
         password = request.POST.get("password")
 
@@ -78,12 +77,11 @@ def login_view(request):
         )
         
         result = r.json()
-        # End reCAPTCHA validation
 
         if result['success']:
             user = authenticate(request, username=username, password=password)
 
-        # Check if authentication successful
+            # Check if authentication successful
             if user is not None:
                 login(request, user)
                 messages.info(

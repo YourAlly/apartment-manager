@@ -66,7 +66,10 @@
 							</ul>
 						{% endif %}
 						<div class="row no-print">
-							<div class="col-12">	
+							<div class="col-12">
+							<a href="{% url 'delete-unit' unit.id %}"
+									class="btn btn-default float-right">
+									<i class="fas fa-trash"></i> Delete Unit</a>
 							<a href="{% url 'edit-unit' unit.id %}"
 									class="btn btn-default float-right">
 									<i class="fas fa-edit"></i> Edit Unit</a>
