@@ -64,7 +64,7 @@
 									class="btn btn-default float-right">
 									<i class="fas fa-trash"></i> Delete Bedspace</a>
 								<a href="{% url 'edit-bedspace' bedspace.bed_number %}"
-										class="btn btn-default float-right">
+										class="btn btn-default float-right" style="margin-right: 1%;">
 										<i class="fas fa-edit"></i> Edit Bedspace</a>
 								{% if bedspace.is_active and bedspace.is_available %}
 									<a href="{% url 'deactivate-bedspace' bedspace.bed_number %}"
