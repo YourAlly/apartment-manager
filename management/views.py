@@ -84,8 +84,6 @@ def login_view(request):
             # Check if authentication successful
             if user is not None:
                 login(request, user)
-                messages.info(
-                    request, 'STILL IN DEVELOPMENT: PLEASE FIND AS MANY BUGS AS POSSIBLE')
                 return redirect('index')
             else:
                 messages.warning(request, 'Invalid username or password')
@@ -130,11 +128,13 @@ def password_reset_view(request):
     
     if request.user.is_staff:
         return render(request, 'management/admin/form.html', {
+            'page_title': 'Reset Password',
             'form': form
         })
 
     else:
         return render(request, 'management/user-form.html', {
+            'page_title': 'Reset Password',
             'form': form
         })
 
@@ -143,6 +143,7 @@ def password_reset_view(request):
 def users_view(request):
     users = User.objects.exclude(is_superuser=True).exclude(is_staff=True)
     return render(request, 'management/admin/tenants_and_bedspacers.html', {
+        'page_title': 'View Users',
         'users': users
     })
 
@@ -157,6 +158,7 @@ def user_view(request, user_id):
     registered_devices = user.devices.all()
 
     return render(request, 'management/admin/user.html', {
+        'page_title': 'View User',
         'user': user,
         'active_residences': active_residences,
         'active_bedspacings': active_bedspacings,
@@ -180,6 +182,7 @@ def units_view(request):
         units = paginator.page(paginator.num_pages)
 
     return render(request, 'management/admin/units.html', {
+        'page_title': 'View Units',
         'units': units
     })
 
@@ -213,6 +216,7 @@ def unit_view(request, unit_id):
 
     else:
         return render(request, 'management/admin/unit.html', {
+            'page_title': 'View Unit',
             'unit': unit,
             'inactive_residences': inactive_residences,
             'unsettled_accounts': unsettled_accounts or None
@@ -225,6 +229,7 @@ def bedspaces_view(request):
     bedspaces = Bedspace.objects.all().order_by('bed_number')
 
     return render(request, 'management/admin/bedspaces.html', {
+        'page_title': 'View Bedspaces',
         'bedspaces': bedspaces
     })
 
@@ -245,6 +250,7 @@ def bedspace_view(request, bedspace_no):
     inactive_bedspacings = bedspace.bedspacings.filter(is_active=False)
 
     return render(request, 'management/admin/bedspace.html', {
+        'page_title': 'View Bedspace',
         'bedspace': bedspace,
         'inactive_bedspacings': inactive_bedspacings,
         'unsettled_accounts': unsettled_accounts
@@ -258,6 +264,7 @@ def accounts_view(request):
     unsettled_accounts = Account.objects.filter(is_settled=False)
 
     return render(request, 'management/admin/accounts.html', {
+        'page_title': 'View Accounts',
         'settled_accounts': settled_accounts,
         'unsettled_accounts': unsettled_accounts
     })
@@ -269,6 +276,7 @@ def devices_view(request):
     all_devices = Device.objects.all()
 
     return render(request, 'management/admin/devices.html', {
+        'page_title': 'View Devices',
         'all_devices': all_devices,
     })
 
@@ -302,6 +310,7 @@ def bedspace_deactivation_view(request, bed_no):
 
         else:
             return render(request, 'management/admin/form.html',{
+                'page_title': 'Deactivate Bedspace',
                 'form_title': 'Confirmation Form',
                 'form': forms.ConfirmationForm()
 
@@ -337,6 +346,7 @@ def unit_deactivation_view(request, unit_id):
 
         else:
             return render(request, 'management/admin/form.html', {
+                'page_title': 'Deactivate Unit',
                 'form_title': 'Confirmation Form',
                 'form': forms.ConfirmationForm()
 
@@ -369,6 +379,7 @@ def account_settlement_view(request, account_id):
 
         else:
             return render(request, 'management/admin/form.html', {
+                'page_title': 'Settle Account',
                 'form_title': 'Confirmation Form',
                 'form': forms.ConfirmationForm()
 
@@ -391,6 +402,7 @@ def user_creation_view(request):
         form = forms.RegistrationForm()
 
     return render(request, 'management/admin/form.html', {
+        'page_title': 'Create User',
         'form_title': 'User Creation Form',
         'form': form
     })
@@ -411,6 +423,7 @@ def unit_creation_view(request):
         form = forms.UnitCreationForm()
 
     return render(request, 'management/admin/form.html', {
+        'page_title': 'Unit Creation Form',
         'form_title': 'Unit Creation Form',
         'form': form
     })
@@ -441,6 +454,7 @@ def residence_creation_view(request):
             form = forms.ResidenceCreationForm()
 
     return render(request, 'management/admin/form.html', {
+        'page_title': 'Residence Recording Form',
         'form_title': 'Residence Creation Form',
         'form': form
     })
@@ -461,6 +475,7 @@ def bedspace_creation_view(request):
         form = forms.BedspaceCreationForm()
 
     return render(request, 'management/admin/form.html', {
+        'page_title': 'Bedspace Creation Form',
         'form_title': 'Bedspace Creation Form',
         'form': form
     })
@@ -492,6 +507,7 @@ def bedspacing_creation_view(request):
             form = forms.BedspacingCreationForm()
 
     return render(request, 'management/admin/form.html', {
+        'page_title': 'Bedspacings Recording Form',
         'form_title': 'Bedspacing Creation Form',
         'form': form
     })
@@ -523,6 +539,7 @@ def account_creation_view(request):
             form = forms.AccountCreationForm()
 
     return render(request, 'management/admin/form.html', {
+        'page_title': 'Account Creation Form',
         'form_title': 'Account Creation Form',
         'form': form
     })
@@ -553,7 +570,8 @@ def device_creation_view(request):
             form = forms.DeviceCreationForm()
 
     return render(request, 'management/admin/form.html', {
-        'form_title': 'Device Creation Form',
+        'page_title': 'Device Registration Form',
+        'form_title': 'Device Registration Form',
         'form': form
     })
 
@@ -582,6 +600,7 @@ def unit_image_creation_view(request):
             form = forms.UnitImageCreationForm()
 
     return render(request, 'management/admin/form.html', {
+        'page_title': 'Unit Image Upload Form',
         'form_title': 'Unit Image Upload Form',
         'multipart': True,
         'form': form
@@ -608,6 +627,7 @@ def user_edit_view(request, user_id):
         form = forms.UserEditForm(instance=target)
 
     return render(request, 'management/admin/form.html', {
+        'page_title': 'User Edit Form',
         'form_title': 'User Edit Form',
         'form': form
     })
@@ -632,6 +652,7 @@ def unit_edit_view(request, unit_id):
         form = forms.UnitCreationForm(instance=target)
 
     return render(request, 'management/admin/form.html', {
+        'page_title': 'Unit Edit Form',
         'form_title': 'Unit Edit Form',
         'form': form
     })
@@ -656,7 +677,8 @@ def bedspace_edit_view(request, bed_no):
         form = forms.BedspaceCreationForm(instance=target)
 
     return render(request, 'management/admin/form.html', {
-        'form_title': 'Account Edit Form',
+        'page_title': 'Bedspace Edit Form',
+        'form_title': 'Bedspace Edit Form',
         'form': form
     })
 
@@ -680,6 +702,7 @@ def account_edit_view(request, account_id):
         form = forms.AccountCreationForm(instance=target)
 
     return render(request, 'management/admin/form.html', {
+        'page_title': 'Account Edit Form',
         'form_title': 'Account Edit Form',
         'form': form
     })
@@ -704,6 +727,7 @@ def device_edit_view(request, device_id):
         form = forms.DeviceCreationForm(instance=target)
 
     return render(request, 'management/admin/form.html', {
+        'page_title': 'Device Edit Form',
         'form_title': 'Device Edit Form',
         'form': form
     })
@@ -731,6 +755,7 @@ def user_deletion_view(request, user_id):
         else:
             messages.warning(request, f'User { user.username } will be deleted')
             return render(request, 'management/admin/form.html', {
+                'page_title': 'Confirmation',
                 'form_title': 'Confirmation Form',
                 'form': forms.ConfirmationForm()
 
@@ -758,6 +783,7 @@ def unit_deletion_view(request, unit_id):
         else:
             messages.warning(request, f'Unit { unit.name } will be deleted')
             return render(request, 'management/admin/form.html', {
+                'page_title': 'Confirmation',
                 'form_title': 'Confirmation Form',
                 'form': forms.ConfirmationForm()
 
@@ -785,6 +811,7 @@ def bedspace_deletion_view(request, bed_no):
         else:
             messages.warning(request, f'Bed number { bedspace.bed_number } will be deleted')
             return render(request, 'management/admin/form.html', {
+                'page_title': 'Confirmation',
                 'form_title': 'Confirmation Form',
                 'form': forms.ConfirmationForm()
 
@@ -812,6 +839,7 @@ def account_deletion_view(request, account_id):
         else:
             messages.warning(request, f'{ account.name } will be deleted')
             return render(request, 'management/admin/form.html', {
+                'page_title': 'Confirmation',
                 'form_title': 'Confirmation Form',
                 'form': forms.ConfirmationForm()
 
@@ -839,6 +867,7 @@ def device_deletion_view(request, device_id):
         else:
             messages.warning(request, f'{ device.name } will be deleted')
             return render(request, 'management/admin/form.html', {
+                'page_title': 'Confirmation',
                 'form_title': 'Confirmation Form',
                 'form': forms.ConfirmationForm()
 
@@ -866,6 +895,7 @@ def unit_image_deletion_view(request, unit_image_id):
         else:
             messages.warning(request, f'Unit_Image_{ unit_image.id } will be deleted')
             return render(request, 'management/admin/form.html', {
+                'page_title': 'Confirmation',
                 'form_title': 'Confirmation Form',
                 'form': forms.ConfirmationForm()
 

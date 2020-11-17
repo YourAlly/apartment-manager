@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-    <title>Sample {{ page_title }}</title>
+    <title>Apartment Manager{% if page_title %} - {{ page_title }}{% endif %}</title>
 
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="{% static 'management/plugins/fontawesome-free/css/all.min.css' %}">
@@ -171,7 +171,6 @@
         Made with AdminLTE
       </div>
       <!-- Default to the left -->
-      <strong>Simple Apartment Management Website made by <a href="https://github.com/YourAlly" target="_blank">Royette Miranda</a>.</strong>
     </footer>
   </div>
   <!-- ./wrapper -->
