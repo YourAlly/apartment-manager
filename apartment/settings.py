@@ -21,13 +21,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY')
-GOOGLE_RECAPTCHA_SECRET_KEY = os.environ.get('GOOGLE_RECAPTCHA_SECRET_KEY')
+SECRET_KEY = '21a6b799ef46e03bad183c489f86565f9e6ff36cb4d6c478ae'
+GOOGLE_RECAPTCHA_SECRET_KEY = '6Ld4XuQZAAAAAMlVNznXvMFCb_LKCpsxX8j5LRb-'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG_MODE')
 
-ALLOWED_HOSTS = ['your-apartment-manager.herokuapp.com']
+ALLOWED_HOSTS = ['apartment-manager-copy.herokuapp.com']
 
 
 # Application definition
@@ -133,10 +133,9 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
-AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-AWS_SECRET_STORAGE_KEY = os.environ.get('AWS_SECRET_STORAGE_KEY')
-AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+AWS_ACCESS_KEY_ID = 'AKIA3BYNG5VVXO2FAIP2'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'apartment-manager-copy-files'
 
 AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = None
