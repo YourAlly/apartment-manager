@@ -40,7 +40,7 @@ urlpatterns = [
     # Edit
     path('users/<int:user_id>/edit', views.user_edit_view, name='edit-user'),
     path('units/<int:unit_id>/edit', views.unit_edit_view, name='edit-unit'),
-    path('bedspaces/<int:bedspace_no>/edit', views.bedspace_edit_view, name='edit-bedspace'),
+    path('bedspaces/<int:bed_no>/edit', views.bedspace_edit_view, name='edit-bedspace'),
     path('accounts/<int:account_id>/edit', views.account_edit_view, name='edit-account'),
     path('devices/<int:device_id>/edit', views.device_edit_view, name='edit-device'),
 
