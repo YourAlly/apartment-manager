@@ -25,7 +25,7 @@ SECRET_KEY = '21a6b799ef46e03bad183c489f86565f9e6ff36cb4d6c478ae'
 GOOGLE_RECAPTCHA_SECRET_KEY = '6Ld4XuQZAAAAAMlVNznXvMFCb_LKCpsxX8j5LRb-'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG_MODE')
+DEBUG = True
 
 ALLOWED_HOSTS = ['apartment-manager-copy.herokuapp.com']
 
