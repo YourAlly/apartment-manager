@@ -47,7 +47,7 @@ urlpatterns = [
     # Delete
     path('users/<int:user_id>/delete', views.user_deletion_view, name='delete-user'),
     path('units/<int:unit_id>/delete', views.unit_deletion_view, name='delete-unit'),
-    path('bedspaces/<int:bedspace_no>/delete',
+    path('bedspaces/<int:bed_no>/delete',
          views.bedspace_deletion_view, name='delete-bedspace'),
     path('accounts/<int:account_id>/delete',
          views.account_deletion_view, name='delete-account'),
