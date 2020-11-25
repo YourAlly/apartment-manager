@@ -338,6 +338,8 @@ def unit_deactivation_view(request, unit_id):
                 residence.is_active = False
                 residence.date_left = timezone.now()
                 residence.save()
+                
+                unit.residents.all().delete()
 
                 tenant = residence.tenant.full_name()
                 messages.success(request, f'{tenant} is no longer a tenant of this unit')
@@ -572,6 +574,37 @@ def device_creation_view(request):
     return render(request, 'management/admin/form.html', {
         'page_title': 'Device Registration Form',
         'form_title': 'Device Registration Form',
+        'form': form
+    })
+
+
+@login_required
+@staff_member_required
+def resident_creation_view(request):
+    if request.method == 'POST':
+        form = forms.ResidentCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Resident Added!')
+            return redirect('index')
+
+    else:
+        unit_id = request.GET.get('unit_id')
+        if unit_id:
+            try:
+                unit = Unit.objects.get(pk=unit_id)
+            except:
+                messages.warning(request, 'Unit not found')
+                form = forms.ResidentCreationForm()
+            else:
+                form = forms.ResidentCreationForm(initial={'unit': unit})
+
+        else:
+            form = forms.ResidentCreationForm()
+
+    return render(request, 'management/admin/form.html', {
+        'page_title': 'Resident Registration Form',
+        'form_title': 'Resident Registration Form',
         'form': form
     })
 

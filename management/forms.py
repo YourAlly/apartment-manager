@@ -1,5 +1,5 @@
 from django.contrib.auth.forms import UserCreationForm
-from .models import User, Residence, Account, Unit, Device, Bedspace, Bedspacing, Unit_Image
+from .models import User, Residence, Account, Unit, Device, Bedspace, Bedspacing, Resident, Unit_Image
 from django import forms
 
 
@@ -65,6 +65,12 @@ class DeviceCreationForm(forms.ModelForm):
     class Meta:
         model = Device
         fields = ['name', 'mac_address', 'owner']
+
+
+class ResidentCreationForm(forms.ModelForm):
+    class Meta:
+        model = Resident
+        fields = ['unit', 'name']
 
 
 class ConfirmationForm(forms.Form):
