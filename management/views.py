@@ -6,7 +6,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import login, logout, authenticate
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
-from .models import User, Residence, Account, Unit, Device, Bedspace, Bedspacing, Unit_Image
+from .models import User, Residence, Account, Unit, Device, Bedspace, Bedspacing, Resident, Unit_Image
 import management.forms as forms
 import apartment.settings
 import requests
@@ -338,7 +338,7 @@ def unit_deactivation_view(request, unit_id):
                 residence.is_active = False
                 residence.date_left = timezone.now()
                 residence.save()
-                
+
                 unit.residents.all().delete()
 
                 tenant = residence.tenant.full_name()
