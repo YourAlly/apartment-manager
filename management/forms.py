@@ -67,6 +67,12 @@ class DeviceCreationForm(forms.ModelForm):
         fields = ['name', 'mac_address', 'owner']
 
 
+class ResidentCreationForm(forms.ModelForm):
+    class Meta:
+        model = Resident
+        fields = ['unit', 'name']
+
+
 class ConfirmationForm(forms.Form):
     confirm = forms.BooleanField(required=False, label='Are you sure about this action?')
 
