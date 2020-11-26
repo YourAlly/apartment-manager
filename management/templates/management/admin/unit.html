@@ -108,7 +108,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								{% for resident in unit.residents.all %}
+								{% for resident in current_residents %}
 									<tr>
 										<td>{{ resident.name }}</td>
 										<td>

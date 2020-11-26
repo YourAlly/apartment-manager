@@ -202,6 +202,7 @@ def unit_view(request, unit_id):
         unsettled_accounts = None
 
     inactive_residences = unit.residences.filter(is_active=False)
+    current_residents = Resident.objects.filter(unit=unit)
 
     if not is_authorized and (request.user != unit.current_user()):
         messages.warning(request, 'You are not authorized to access this page')
@@ -218,6 +219,7 @@ def unit_view(request, unit_id):
         return render(request, 'management/admin/unit.html', {
             'page_title': 'View Unit',
             'unit': unit,
+            'current_residents': current_residents
             'inactive_residences': inactive_residences,
             'unsettled_accounts': unsettled_accounts or None
         })
@@ -339,7 +341,7 @@ def unit_deactivation_view(request, unit_id):
                 residence.date_left = timezone.now()
                 residence.save()
 
-                unit.residents.all().delete()
+                Resident.objects.filter(unit=unit).delete()
 
                 tenant = residence.tenant.full_name()
                 messages.success(request, f'{tenant} is no longer a tenant of this unit')
