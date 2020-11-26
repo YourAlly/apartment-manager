@@ -124,3 +124,9 @@ class Device(models.Model):
 class Unit_Image(models.Model):
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name="images")
     image = models.ImageField(default='default.jpg', upload_to='unit_images')
+
+
+class Resident(models.Model):
+    unit = models.ForeignKey(
+        Unit, on_delete=models.CASCADE, related_name='residents')
+    name = models.CharField(max_length=128)
