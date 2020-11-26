@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Unit, Residence, Bedspace, Account, Device, Bedspacing
+from .models import User, Unit, Residence, Bedspace, Account, Device, Bedspacing, Resident, Unit_Image
 from django.contrib.auth.admin import UserAdmin
 
 admin.site.site_header = 'Admin Panel'
@@ -107,3 +107,5 @@ admin.site.register(Unit, UnitAdmin)
 admin.site.register(Residence, ResidenceAdmin)
 admin.site.register(Account, AccountAdmin)
 admin.site.register(Device, DeviceAdmin)
+admin.site.register(Resident)
+admin.site.register(Unit_Image)
