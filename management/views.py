@@ -219,7 +219,7 @@ def unit_view(request, unit_id):
         return render(request, 'management/admin/unit.html', {
             'page_title': 'View Unit',
             'unit': unit,
-            'current_residents': current_residents
+            'current_residents': current_residents,
             'inactive_residences': inactive_residences,
             'unsettled_accounts': unsettled_accounts or None
         })
