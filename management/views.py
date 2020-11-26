@@ -341,7 +341,7 @@ def unit_deactivation_view(request, unit_id):
                 residence.date_left = timezone.now()
                 residence.save()
 
-                Resident.objects.filter(unit=unit).delete()
+                unit.residents.all().delete()
 
                 tenant = residence.tenant.full_name()
                 messages.success(request, f'{tenant} is no longer a tenant of this unit')
@@ -817,6 +817,34 @@ def unit_deletion_view(request, unit_id):
 
         else:
             messages.warning(request, f'Unit { unit.name } will be deleted')
+            return render(request, 'management/admin/form.html', {
+                'page_title': 'Confirmation',
+                'form_title': 'Confirmation Form',
+                'form': forms.ConfirmationForm()
+
+            })
+
+
+@login_required
+@staff_member_required
+def resident_deletion_view(request, resident_id):
+    try:
+        resident = Resident.objects.get(pk=resident_id)
+    except:
+        return render(request, 'management/admin/admin-404.html')
+
+    else:
+        if request.method == 'POST':
+            confirmation = forms.ConfirmationForm(request.POST)
+            if confirmation.is_valid() and confirmation.cleaned_data['confirm']:
+                resident.delete()
+                messages.success(
+                    request, f'The User is now deleted')
+
+            return redirect('users')
+
+        else:
+            messages.warning(request, f'Resident { resident.name } will be deleted')
             return render(request, 'management/admin/form.html', {
                 'page_title': 'Confirmation',
                 'form_title': 'Confirmation Form',

@@ -48,6 +48,8 @@ urlpatterns = [
     # Delete
     path('users/<int:user_id>/delete', views.user_deletion_view, name='delete-user'),
     path('units/<int:unit_id>/delete', views.unit_deletion_view, name='delete-unit'),
+    path('resident/<int:resident_id>/delete',
+         views.resident_deletion_view, name='delete-resident'),
     path('bedspaces/<int:bed_no>/delete',
          views.bedspace_deletion_view, name='delete-bedspace'),
     path('accounts/<int:account_id>/delete',
