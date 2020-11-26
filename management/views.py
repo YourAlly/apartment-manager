@@ -586,7 +586,7 @@ def resident_creation_view(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Resident Added!')
-            return redirect('unit', form.cleaned_data['unit'])
+            return redirect('unit', form.unit.id)
 
     else:
         unit_id = request.GET.get('unit_id')
