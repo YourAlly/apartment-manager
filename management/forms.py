@@ -1,5 +1,5 @@
 from django.contrib.auth.forms import UserCreationForm
-from .models import User, Residence, Account, Unit, Device, Bedspace, Bedspacing, Unit_Image
+from .models import User, Residence, Account, Unit, Device, Bedspace, Bedspacing, Resident, Unit_Image
 from django import forms
 
 
