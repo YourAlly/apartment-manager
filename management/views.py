@@ -833,13 +833,14 @@ def resident_deletion_view(request, resident_id):
 
     else:
         if request.method == 'POST':
+            unit_id = resident.unit.id
             confirmation = forms.ConfirmationForm(request.POST)
             if confirmation.is_valid() and confirmation.cleaned_data['confirm']:
                 resident.delete()
                 messages.success(
-                    request, f'The User is now deleted')
+                    request, f'The resident is now deleted')
 
-            return redirect('users')
+            return redirect('unit', unit_id)
 
         else:
             messages.warning(request, f'Resident { resident.name } will be deleted')
