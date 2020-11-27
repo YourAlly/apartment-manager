@@ -6,7 +6,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import login, logout, authenticate
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
-from .models import User, Residence, Account, Unit, Device, Bedspace, Bedspacing, Unit_Image
+from .models import User, Residence, Account, Unit, Device, Bedspace, Bedspacing, Resident, Unit_Image
 import management.forms as forms
 import apartment.settings
 import requests
@@ -284,6 +284,46 @@ def devices_view(request):
 # Deactivation Views
 @login_required
 @staff_member_required
+def unit_deactivation_view(request, unit_id):
+    try:
+        unit = Unit.objects.get(pk=unit_id)
+    except:
+        return render(request, 'management/admin/admin-404.html')
+
+    if not unit.is_active() or not unit.is_available:
+        messages.warning(
+            request, 'The unit is currently inactive or unavailable')
+        return redirect('unit', unit_id)
+
+    else:
+        if request.method == 'POST':
+            confirmation = forms.ConfirmationForm(request.POST)
+            if confirmation.is_valid() and confirmation.cleaned_data['confirm']:
+                residence = unit.residences.get(is_active=True)
+                residence.is_active = False
+                residence.date_left = timezone.now()
+                residence.save()
+
+                # Clears all current residents
+                unit.residents.all().delete()
+
+                tenant = residence.tenant.full_name()
+                messages.success(
+                    request, f'{tenant} is no longer a tenant of this unit')
+
+            return redirect('unit', unit_id)
+
+        else:
+            return render(request, 'management/admin/form.html', {
+                'page_title': 'Deactivate Unit',
+                'form_title': 'Confirmation Form',
+                'form': forms.ConfirmationForm()
+
+            })
+
+
+@login_required
+@staff_member_required
 def bedspace_deactivation_view(request, bed_no):
     try:
         bedspace = Bedspace.objects.get(bed_number=bed_no)
@@ -316,41 +356,6 @@ def bedspace_deactivation_view(request, bed_no):
 
             })
 
-
-@login_required
-@staff_member_required
-def unit_deactivation_view(request, unit_id):
-    try:
-        unit = Unit.objects.get(pk=unit_id)
-    except:
-        return render(request, 'management/admin/admin-404.html')
-
-    if not unit.is_active() or not unit.is_available:
-        messages.warning(
-            request, 'The unit is currently inactive or unavailable')
-        return redirect('unit', unit_id)
-
-    else:
-        if request.method == 'POST':
-            confirmation = forms.ConfirmationForm(request.POST)
-            if confirmation.is_valid() and confirmation.cleaned_data['confirm']:
-                residence = unit.residences.get(is_active=True)
-                residence.is_active = False
-                residence.date_left = timezone.now()
-                residence.save()
-
-                tenant = residence.tenant.full_name()
-                messages.success(request, f'{tenant} is no longer a tenant of this unit')
-
-            return redirect('unit', unit_id)
-
-        else:
-            return render(request, 'management/admin/form.html', {
-                'page_title': 'Deactivate Unit',
-                'form_title': 'Confirmation Form',
-                'form': forms.ConfirmationForm()
-
-            })
 
 # I consider it to be similar to deactivation
 @login_required
@@ -459,6 +464,37 @@ def residence_creation_view(request):
         'form': form
     })
 
+
+@login_required
+@staff_member_required
+def resident_creation_view(request):
+    if request.method == 'POST':
+        form = forms.ResidentCreationForm(request.POST)
+        if form.is_valid():
+            resident = form.save()
+            messages.success(request, 'Resident Added!')
+            return redirect('unit', resident.unit.id)
+
+    else:
+        unit_id = request.GET.get('unit_id')
+        if unit_id:
+            try:
+                unit = Unit.objects.get(pk=unit_id)
+            except:
+                messages.warning(request, 'Unit not found')
+                form = forms.ResidentCreationForm()
+            else:
+                form = forms.ResidentCreationForm(initial={'unit': unit})
+
+        else:
+            form = forms.ResidentCreationForm()
+
+    return render(request, 'management/admin/form.html', {
+        'page_title': 'Resident Registration Form',
+        'form_title': 'Resident Registration Form',
+        'form': form
+    })
+    
 
 @login_required
 @staff_member_required
@@ -810,6 +846,36 @@ def bedspace_deletion_view(request, bed_no):
 
         else:
             messages.warning(request, f'Bed number { bedspace.bed_number } will be deleted')
+            return render(request, 'management/admin/form.html', {
+                'page_title': 'Confirmation',
+                'form_title': 'Confirmation Form',
+                'form': forms.ConfirmationForm()
+
+            })
+
+
+@login_required
+@staff_member_required
+def resident_deletion_view(request, resident_id):
+    try:
+        resident = Resident.objects.get(pk=resident_id)
+    except:
+        return render(request, 'management/admin/admin-404.html')
+
+    else:
+        if request.method == 'POST':
+            unit_id = resident.unit.id
+            confirmation = forms.ConfirmationForm(request.POST)
+            if confirmation.is_valid() and confirmation.cleaned_data['confirm']:
+                resident.delete()
+                messages.success(
+                    request, f'The resident is now deleted')
+
+            return redirect('unit', unit_id)
+
+        else:
+            messages.warning(
+                request, f'Resident { resident.name } will be deleted')
             return render(request, 'management/admin/form.html', {
                 'page_title': 'Confirmation',
                 'form_title': 'Confirmation Form',
