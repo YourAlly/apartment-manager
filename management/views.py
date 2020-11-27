@@ -401,7 +401,7 @@ def user_creation_view(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'User Created!')
-            return redirect('index')
+            return redirect('users')
 
     else:
         form = forms.RegistrationForm()
@@ -422,7 +422,7 @@ def unit_creation_view(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Unit Created!')
-            return redirect('index')
+            return redirect('units')
 
     else:
         form = forms.UnitCreationForm()
@@ -558,7 +558,7 @@ def account_creation_view(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Account Created!')
-            return redirect('index')
+            return redirect('accounts')
 
     else:
         user_id = request.GET.get('user_id')
@@ -589,7 +589,7 @@ def device_creation_view(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Device Created!')
-            return redirect('index')
+            return redirect('devices')
 
     else:
         user_id = request.GET.get('user_id')
