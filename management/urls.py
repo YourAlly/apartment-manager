@@ -25,6 +25,7 @@ urlpatterns = [
     path('create/unit-image',
          views.unit_image_creation_view, name='create-unit-image'),
     path('create/residence', views.residence_creation_view, name='create-residence'),
+    path('create/resident', views.resident_creation_view, name='create-resident'),
     path('create/device', views.device_creation_view, name='create-device'),
     path('create/account', views.account_creation_view, name='create-account'),
     path('reset-password', views.password_reset_view, name='password-reset'),
@@ -47,6 +48,8 @@ urlpatterns = [
     # Delete
     path('users/<int:user_id>/delete', views.user_deletion_view, name='delete-user'),
     path('units/<int:unit_id>/delete', views.unit_deletion_view, name='delete-unit'),
+    path('resident/<int:resident_id>/delete',
+         views.resident_deletion_view, name='delete-resident'),
     path('bedspaces/<int:bed_no>/delete',
          views.bedspace_deletion_view, name='delete-bedspace'),
     path('accounts/<int:account_id>/delete',
