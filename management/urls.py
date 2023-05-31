@@ -60,3 +60,4 @@ urlpatterns = [
          views.unit_image_deletion_view, name='delete-unit-image'),
 ]
 
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

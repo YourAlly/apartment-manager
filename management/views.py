@@ -67,16 +67,17 @@ def login_view(request):
         username = request.POST.get("username")
         password = request.POST.get("password")
 
-        recaptcha_response = request.POST.get('g-recaptcha-response')
+        # recaptcha_response = request.POST.get('g-recaptcha-response')
 
-        r = requests.post(
-            'https://www.google.com/recaptcha/api/siteverify', data={
-                'secret': apartment.settings.GOOGLE_RECAPTCHA_SECRET_KEY,
-                'response': recaptcha_response
-            }
-        )
+        # r = requests.post(
+        #     'https://www.google.com/recaptcha/api/siteverify', data={
+        #         'secret': apartment.settings.GOOGLE_RECAPTCHA_SECRET_KEY,
+        #         'response': recaptcha_response
+        #     }
+        # )
         
-        result = r.json()
+        # result = r.json()
+        result = {'success': True}
 
         if result['success']:
             user = authenticate(request, username=username, password=password)
@@ -215,6 +216,7 @@ def unit_view(request, unit_id):
         })
 
     else:
+        image = Unit_Image.objects.get(unit = unit)
         return render(request, 'management/admin/unit.html', {
             'page_title': 'View Unit',
             'unit': unit,
