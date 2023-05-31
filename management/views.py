@@ -216,7 +216,6 @@ def unit_view(request, unit_id):
         })
 
     else:
-        image = Unit_Image.objects.get(unit = unit)
         return render(request, 'management/admin/unit.html', {
             'page_title': 'View Unit',
             'unit': unit,
